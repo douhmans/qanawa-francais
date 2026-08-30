@@ -26,7 +26,9 @@ def main() -> int:
     proto = sys.argv[2] if len(sys.argv) > 2 else os.path.join(RACINE, "prototype")
     dist = os.path.join(RACINE, "win32", "dist")
     if not os.path.isfile(exe):
-        print(f"✗ lanceur introuvable : {exe}\n  → build under Windows : win32\\build_exe.bat", file=sys.stderr)
+        print("✗ lanceur introuvable : " + exe, file=sys.stderr)
+        print("  → à compiler sous Windows : win32\\build_exe.bat", file=sys.stderr)
+        print("  → ou reprendre le binaire publié : Releases → Qanawa-windows.zip", file=sys.stderr)
         return 1
     if not os.path.isfile(os.path.join(proto, "index.html")):
         print(f"✗ prototype introuvable : {proto}", file=sys.stderr)
