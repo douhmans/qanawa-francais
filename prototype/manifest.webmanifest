@@ -1,0 +1,16 @@
+{
+  "name": "قَنَوة — قراءة الفرنسية 6e",
+  "short_name": "قَنَوة",
+  "description": "منصة تسهيل فهم وقراءة نصوص الفرنسية للسنة السادسة أساسي (نموذج أولي)",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBF7EF",
+  "theme_color": "#1B4F8C",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
