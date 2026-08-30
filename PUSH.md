@@ -33,8 +33,17 @@ contourne pas l'authentification.
 **A. Je pousse moi-même (30 secondes de votre côté).** Recréez un jeton fine-grained **jetable**
 (`GUIDE-TOKEN-GITHUB.md` § « TOKEN n° 2 » donne les cases exactes : dépôt unique `douhmans/qanawa-francais`,
 expiration 1 jour, `Contents: Read and write` **seulement** — pas besoin de `Workflows` ni d'`Issues`, tout est déjà fait).
-Collez-le ici ; je lance le push, je vérifie l'arbre en ligne, puis je supprime le fichier et je vous
-rappelle de révoquer.
+Ports nécessaires, selon ce que vous voulez :
+- **`Contents: Read and write`** → push des 7 commits (fast-forward), rien d'autre.
+- **+ `Workflows: Read and write`** → si vous voulez aussi que le job Windows
+  (`.qanawa-ci/workflows/release-windows.yml`) soit **actif** (copié dans `.github/workflows/`, il
+  construira le `Qanawa.exe` sur un vrai poste Windows et le publiera en Release à chaque tag `v*`).
+- La **Release** elle-même (binaire + ZIP + SHA-256) se crée avec le même token, portée `Contents` :
+  `POST /repos/.../releases` + upload `application/zip` sur `uploads.github.com`.
+
+Collez-le ici ; je lance le push, je crée la Release `v0.1.0-prototype` avec le ZIP déjà construit
+(`win32/dist/Qanawa-windows.zip`, SHA-256 `5a06e7a7…b3ef`), je vérifie l'arbre en ligne, je supprime
+le fichier du jeton, et je vous rappelle de révoquer.
 
 **B. Vous poussez vous-même**, depuis un terminal où vous êtes connecté à GitHub :
 
