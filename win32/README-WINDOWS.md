@@ -84,3 +84,30 @@ La progression est **locale au poste et au navigateur** : chaque élève doit ut
 le même navigateur, sinon il repart de zéro. Le vrai synchronisation par compte (sprint S0–S1) arrive
 avec la version serveur ; l'espace enseignant exporte déjà un **CSV** que vous récupérez sur la clé USB
 de la salle informatique.
+
+---
+
+## Mettre l'application sur le serveur de la salle (tous les postes)
+
+Le même exécutable sait servir le réseau local :
+
+```bat
+Qanawa.exe --lan --serve-only --port 8137
+```
+
+Windows demandera une réservation d'URL (une seule fois, en administrateur) :
+
+```bat
+netsh http add urlacl url=http://+:8137/ user=Everyone
+netsh advfirewall firewall add rule name="Qanawa salle" dir=in action=allow protocol=TCP localport=8137 profile=private
+```
+
+Le lanceur affiche alors les adresses à donner aux élèves. **Deux différences à connaître** (détail
+complet : `LAN-MODE.md` à la racine du dépôt) :
+
+1. **un enregistrement par pseudo** dans le navigateur du poste : deux élèves du même poste ne se
+   marchent plus dessus, et l'accueil propose « 🔄 تلميذ آخر » + les prénoms déjà connus ;
+2. en `http://10.x.x.x:8137/` le contexte n'est **pas sécurisé** → ni micro (`SpeechRecognition`),
+   ni service worker (mode hors ligne/installable). Le champ « nombre de mots » remplace la dictée,
+   le reste (lecture, surlignage, quiz, jeux, robot, malette, bilans) est identique. Le HTTPS, même
+   auto-signé, rend les deux ; `tools/qanawa-nginx.conf` est prêt pour ça.

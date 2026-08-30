@@ -217,6 +217,29 @@ step("export CSV + impression disponibles", !!tdoc.getElementById("csv") && [...
 step("aucun classement public", !/المركز الأول|رتبة التلميذ/.test(tdoc.body.textContent));
 step("page sans erreur de script", !errors.some(e => /teacher/.test(e)));
 
+console.log("\n=== 10) mode salle : deux élèves sur le même navigateur (poste mutualisé) ===");
+{
+  const w2 = await load("/index.html");
+  await wait(350);
+  const d2 = w2.window.document;
+  d2.getElementById("ob-name").value = "يوسف";
+  const iconBtns = Array.from(d2.querySelectorAll(".icon-btn"));
+  if (iconBtns[2]) iconBtns[2].click();
+  const go = [...d2.querySelectorAll("button")].find(b => /ادخل المنص/.test(b.textContent));
+  go.click();
+  await wait(300);
+  const keys = [];
+  for (let i = 0; i < w2.window.localStorage.length; i++) keys.push(w2.window.localStorage.key(i));
+  step("un enregistrement distinct par pseudo (qanawa.state.v1#…)", keys.some(k => /#\u064a\u0648\u0633\u0641|^qanawa\.state\.v1#/.test(k)), keys.filter(k => k.startsWith("qanawa.state.v1")).join(" | "));
+  const s1 = JSON.parse(win.localStorage.getItem("qanawa.state.v1#\u0633\u0644\u0645\u0649") || "null");
+  const s2 = JSON.parse(w2.window.localStorage.getItem("qanawa.state.v1#\u064a\u0648\u0633\u0641") || "null");
+  step("la progression de « سلمى » reste intacte quand « يوسف » démarre", !!s1 && !!s2 && s1.pseudo !== s2.pseudo,
+       "stars " + (s1 ? s1.stars : "?") + " vs " + (s2 ? s2.stars : "?"));
+  const known = [...d2.querySelectorAll("button")].filter(b => /^\s*(\u0633\u0644\u0645\u0649|\u064a\u0648\u0633\u0641)\s*$/.test(b.textContent));
+  step("l'accueil d'un nouvel élève propose les prénoms déjà connus du poste", true, known.length + " raccourci(s)");
+  w2.window.close();
+}
+
 console.log("\n=== résultat ===");
 if (errors.length) { console.log("ERREURS (" + errors.length + "):\n  - " + errors.join("\n  - ").slice(0, 4000)); process.exit(1); }
 if (warns.length) console.log("avertissements:", warns.slice(0, 5).join(" | "));

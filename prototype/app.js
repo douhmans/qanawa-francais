@@ -25,8 +25,27 @@ const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const today = () => new Date().toISOString().slice(0, 10);
 
-/* ------------------------------------------------------------------ état */
+/* ------------------------------------------------------------------ état
+   Mode « salle » (serveur de l'école, plusieurs élèves sur le même navigateur) :
+   un enregistrement par pseudo. La machine se souvient du dernier élève, et l'écran
+   d'accueil propose « changer d'élève » sinon on écraserait la progression d'un camarade. */
 const KEY = "qanawa.state.v1";
+const LAST = KEY + "#last";
+let WHO = "";
+const keyFor = (p) => KEY + "#" + String(p || "").trim().toLowerCase().replace(/\s+/g, "-");
+const readRaw = (k) => { try { return localStorage.getItem(k); } catch { return null; } }
+const writeRaw = (k, v) => { try { localStorage.setItem(k, v); } catch { } };
+/* tous les pseudos déjà enregistrés sur ce navigateur (mode salle) */
+function studentKeys() {
+  const out = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i) || "";
+      if (k.indexOf(KEY + "#") === 0 && k !== LAST && readRaw(k)) out.push(decodeURIComponent(k.slice((KEY + "#").length)));
+    }
+  } catch { }
+  return out;
+}
 const blank = () => ({
   pseudo: "", avatar: "🦊", voie: null,
   stars: 0, day: today(), dayStars: 0, streak: 0, lastDay: "",
@@ -37,11 +56,20 @@ const blank = () => ({
   sfx: true, showAr: true, reduce: false, rate: 0.85, voiceURI: ""
 });
 let S = load();
-function load() {
-  try { return Object.assign(blank(), JSON.parse(localStorage.getItem(KEY) || "{}")); }
+function load(pseudo) {
+  const p = pseudo === undefined ? readRaw(LAST) : pseudo;
+  if (p) try { WHO = String(JSON.parse(readRaw(keyFor(p)) || "{}").pseudo || p) || p; } catch { WHO = p; }
+  const raw = (p ? readRaw(keyFor(p)) : null) || readRaw(KEY);      // migration du brouillon mono-poste
+  try { return Object.assign(blank(), JSON.parse(raw || "{}")); }
   catch { return blank(); }
 }
-function save() { localStorage.setItem(KEY, JSON.stringify(S)); paintTop(); }
+function save() {
+  const j = JSON.stringify(S);
+  const p = String(S.pseudo || "").trim();
+  if (p) { writeRaw(keyFor(p), j); writeRaw(LAST, p); if (WHO !== p) WHO = p; }
+  writeRaw(KEY, j);                                                 // lu par  فضاء الأستاذ / export
+  paintTop();
+}
 function dayRoll() {
   if (S.day !== today()) { S.day = today(); S.dayStars = 0; }
 }
@@ -237,6 +265,15 @@ function onboarding(root) {
     <p class="muted">لا نطلب اسم العائلة ولا المدرسة ولا رقم الهاتف. يكفي اسم تُعرف به عندنا.</p>`;
   const inp = el("input", { id: "ob-name", placeholder: "اسم الدّلع (مثال: سلمى)", style: "min-height:56px;width:100%;border-radius:14px;border:1px solid var(--line);padding:0 14px;font:inherit" });
   box.appendChild(inp);
+  {
+    const known = studentKeys();
+    if (known.length) {
+      const row = el("div", { class: "row", style: "flex-wrap:wrap;margin-top:10px" });
+      row.appendChild(el("small", { class: "muted" }, "موجودون على هذا الجهاز — اختر اسمك:"));
+      known.slice(0, 10).forEach(n => row.appendChild(el("button", { class: "btn sm ghost", onclick: () => { inp.value = n; } }, n)));
+      box.appendChild(row);
+    }
+  }
   const av = el("div", { class: "row", style: "margin-top:10px;flex-wrap:wrap" });
   ["🦊", "🐢", "🦉", "🐝", "🐬", "🦜"].forEach(e => {
     av.appendChild(el("button", { class: "icon-btn", style: "font-size:1.5rem", onclick: (ev) => { S.avatar = e; $$("button", av).forEach(b => b.style.outline = ""); ev.currentTarget.style.outline = "3px solid var(--teal)"; } }, e));
@@ -876,18 +913,25 @@ $("#btn-settings").onclick = () => {
   const range = el("input", { type: "range", min: "0.4", max: "1.1", step: "0.05", value: S.rate });
   range.oninput = () => { S.rate = +range.value; save(); };
   const reset = el("button", { class: "btn ghost block", onclick: () => {
-    if (confirm("نحذف كل التقدّم والنجوم؟")) {
-      localStorage.removeItem(KEY);
+    if (confirm("نحذف تقدّم «" + (S.pseudo || "؟") + "» ونجومه؟")) {
+      writeRaw(keyFor(S.pseudo), ""); writeRaw(LAST, ""); localStorage.removeItem(KEY);
       if (location.reload) location.reload(); else location.assign(location.pathname);
     }
   } }, "🗑️ تصفير بياناتي");
+  /* poste partagé de la salle : on rend le changement d'élève évident (sinon on écrase un camarade) */
+  const others = studentKeys().filter(k => k !== String(S.pseudo));
+  const sw = el("button", { class: "btn ghost block", onclick: () => {
+    writeRaw(LAST, ""); location.hash = ""; location.reload ? location.reload() : location.assign(location.pathname);
+  } }, "🔄 تلميذ آخر (نفس الجهاز/المتصفّح)");
+  const who = others.length ? el("div", { class: "row", style: "flex-wrap:wrap;margin-top:6px" },
+      el("small", { class: "muted" }, "على هذا الجهاز: " + studentKeys().map(esc).join(" · "))) : null;
   body.append(el("div", {}, "<b>الصوت الفرنسي</b>", v),
                 el("div", {}, "<b>سرعة القراءة</b>", range),
                 chk("إظهار الترجمة العربية افتراضيًا", "showAr"),
                 chk("مؤثرات صوتية", "sfx"),
                 chk("إيقاف الحركات (تقليل الحركة)", "reduce"),
-                el("div", { class: "muted" }, "بياناتك محفوظة على هذا الجهاز فقط، بدون حساب ولا اسم عائلة. لتفعيل الحفظ على Server: راجع docs/privacy.md في المستودع."),
-                reset);
+                el("div", { class: "muted" }, "التقدّم محفوظ داخل هذا المتصفّح وحده (لا حساب، لا اسم عائلة، لا إرسال على الشبكة). على خادم المدرسة: تسجيل لكل تلميذ بنفس الاسم، وفضاء الأستاذ يرى أسماء هذا الجهاز."),
+                sw, who, reset);
   sheet("<b>الإعدادات</b>", body);
 };
 

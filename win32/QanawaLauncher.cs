@@ -40,11 +40,12 @@ namespace Qanawa
         [STAThread]
         private static int Main(string[] args)
         {
-            bool gui = true, browser = true;
+            bool gui = true, browser = true, lan = false;
             for (int i = 0; i < args.Length; i++)
             {
                 string a = args[i];
                 if (a == "--serve-only") gui = false;
+                else if (a == "--lan") lan = true;
                 else if (a == "--no-browser") browser = false;
                 else if (a == "--help") { Console.WriteLine("Qanawa.exe [--serve-only] [--no-browser] [--port N]"); return 0; }
                 else if (a == "--port" && i + 1 < args.Length) _port = ParseInt(args[++i], _port);
@@ -57,15 +58,26 @@ namespace Qanawa
                      "Dézippe l'archive complète (Qanawa.exe et le dossier prototype/ dans le même répertoire), puis relance.");
                 return 2;
             }
-            if (!StartServer())
+            if (!StartServer(lan))
             {
+                if (lan)
+                {
+                    // Le préfixe http://+:port/ demande une réservation d'URL côté Windows.
+                    Fail("Mode salle refusé par Windows (préfixe http://+:" + _port + "/ non autorisé).",
+                         "Dans une invite de commandes EN ADMINISTRATEUR, une seule fois :\n" +
+                         "   netsh http add urlacl url=http://+:" + _port + "/ user=Everyone\n" +
+                         "Puis relance :  Qanawa.exe --lan --serve-only\n" +
+                         "(et le pare-feu : autoriser le port " + _port + " en réseau privé uniquement.)");
+                    return 3;
+                }
                 // Plan B : pas de serveur (port bloqué, restriction locale) → on ouvre le fichier directement.
                 OpenWithShell(Path.Combine(_root, "index.html"));
                 Fail("Serveur local impossible à démarrer — la page a été ouverte en mode fichier.",
                      "Le surlignage et les jeux fonctionnent, mais la progression peut ne pas être conservée (file://).");
                 return 0;
             }
-            if (browser) OpenBrowser();
+            if (browser && !lan) OpenBrowser();
+            if (lan) PrintLanAddresses();
             if (!gui)
             {
                 Console.WriteLine("Qanawa: " + Url() + "  (Ctrl+C pour arrêter)");
@@ -111,7 +123,10 @@ namespace Qanawa
             catch { return Environment.CurrentDirectory; }
         }
 
-        private static bool StartServer()
+        /* lan=false → http://localhost:<port>/ (un seul poste, aucune autorisation spéciale).
+           lan=true  → http://+:/<port>/ (toute la salle) : exige une réservation d'URL, sinon
+           Windows renvoie « Access is denied » — la commande exacte est affichée à l'écran. */
+        private static bool StartServer(bool lan)
         {
             int[] prefs = _port > 0 ? new int[] { _port } : new int[] { 8137, 8138, 4173, 8777, 5151 };
             for (int i = 0; i < prefs.Length; i++)
@@ -120,7 +135,7 @@ namespace Qanawa
                 try
                 {
                     l = new HttpListener();
-                    l.Prefixes.Add("http://localhost:" + prefs[i] + "/");
+                    l.Prefixes.Add(lan ? "http://+:" + prefs[i] + "/" : "http://localhost:" + prefs[i] + "/");
                     l.Start();
                 }
                 catch
@@ -151,6 +166,22 @@ namespace Qanawa
                 try { Serve(ctx); }
                 catch { try { ctx.Response.Abort(); } catch { } }
             }
+        }
+
+        private static void PrintLanAddresses()
+        {
+            try
+            {
+                Console.WriteLine();
+                Console.WriteLine("  Qanawa — mode salle de classe : http://localhost:" + _port + "/");
+                foreach (System.Net.IPAddress ip in System.Net.Dns.GetHostAddresses(System.Net.Dns.GetHostName()))
+                {
+                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                        Console.WriteLine("     élèves : http://" + ip + ":" + _port + "/   (enseignant : http://" + ip + ":" + _port + "/teacher.html)");
+                }
+                Console.WriteLine();
+            }
+            catch { }
         }
 
         private static void Serve(HttpListenerContext ctx)

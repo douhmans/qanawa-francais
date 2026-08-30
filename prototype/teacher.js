@@ -25,7 +25,21 @@ const exAt = (e, i) => {
   return "";
 };
 
-/* --- l'élève réel de ce navigateur, s'il a utilisé le prototype --- */
+/* --- les élèves réels de ce navigateur (mode salle : un enregistrement par pseudo) --- */
+const KEY = "qanawa.state.v1";
+function pupils() {
+  const out = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i) || "";
+      if (k.indexOf(KEY + "#") === 0 && k.slice(-5) !== "#last") {
+        const raw = localStorage.getItem(k); if (!raw) continue;
+        try { const o = JSON.parse(raw); if (o && (o.stars || Object.keys(o.done || {}).length)) out.push(o); } catch (e) {}
+      }
+    }
+  } catch (e) {}
+  return out;
+}
 let local = null;
 try {
   const st = JSON.parse(localStorage.getItem("qanawa.state.v1") || "null");
@@ -47,7 +61,13 @@ try {
   }
 } catch (e) {}
 
-const ELEVES = [local, ...(D.teacher_demo ? D.teacher_demo.eleves : [])].filter(Boolean);
+/* les élèves enregistrés sur CE navigateur d'abord (vraies données), puis le jeu de démonstration,
+   sans doublon de pseudo : sur un poste de salle, le même navigateur porte plusieurs élèves. */
+const all = [...pupils(), local].filter(Boolean).map(o => Object.assign({}, o,
+  { pseudo: String(o.pseudo || "تلميذ").replace(/\s*\(هذا المتصفح\)\s*$/, "") + " (هذا الجهاز)" }));
+const seen = new Set();
+const reels = all.filter(o => { const k = o.pseudo.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; });
+const ELEVES = [...reels, ...(D.teacher_demo ? D.teacher_demo.eleves : [])].filter(Boolean);
 
 /* ------------------------------------------------------- 1. vue d'ensemble */
 main.appendChild(card(`<h1>🗺️ خريطة القسم — 6è ب</h1>
