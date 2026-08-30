@@ -1,31 +1,58 @@
-# État du dépôt — et ce qui reste à faire
+# État de la synchronisation — lecture attentive demandée
 
-**Fait, vérifié côté GitHub :**
+## Ce qui est **en ligne** (`github.com/douhmans/qanawa-francais`, `main`)
 
-| Action | Résultat |
+| Élément | Valeur vérifiée |
 |---|---|
-| Push `main` | `c9647fb..f01fa91` (fast-forward) · `git ls-remote` distant = local = `f01fa9154cdd7a43eb252b24384008f8e5cd3c85` |
-| Renommage | `douhmans/-` → **`douhmans/qanawa-francais`** (HTTP 200 ; l'ancien lien répond encore — redirection vérifiée par `git ls-remote`) |
-| Description | mise à jour en arabe (réf. CNIP + PWA + robot) |
-| Topics | `tunisie, francais, primaire, edtech, pwa, accessibilite` |
-| Contenu en ligne | **23 fichiers · 39,3 Mo** (`GET /git/trees/f01fa91…?recursive=1`) |
+| Commit de tête | `e788491` |
+| Workflow CI | `.github/workflows/curriculum.yml` → **curriculum · completed · success** (3 exécutions relevées) |
+| Milestone | **#1** « Socle & données officielles (S-1 → S1) » |
+| Labels | `pedagogie`, `frontend`, `ai`, `privacy`, `contenu`, `enhancement` |
+| Issues | **#1 … #12** (les 12 sprints du chantier, créées par API) |
+| Topics | `francais, tunisie, primaire, edtech, pwa, accessibilite` |
+| Fichiers | 27 (dont 5 PDF CNIP dans `official-docs/`, ~39,3 Mo) |
 
-**Reste (1 seul point, à faire depuis github.com — pas de token nécessaire) :**
+## Ce qui est **local et attend un push** (3 commits, `main` = `24e737f`)
 
-1. **Activer le contrôle continu du programme** : Repository → *Add file → Create a new file* →
-   chemin `.github/workflows/curriculum.yml` → coller le contenu de `ops/curriculum.yml` → commit sur `main`.
-   Motif du contournement : GitHub refuse qu'un token sans portée `workflow` écrive sous `.github/workflows/`
-   (`remote rejected … without 'workflow' scope`) — on n'a pas demandé cette portée.
-**`fr_6eme/` n'a rien à supprimer** : vérifié sur `HEAD 2165285` — `GET /contents/fr_6eme` → **404**, et les 24
-fichiers de l'arbre ne contiennent aucun chemin `fr_6eme/*`. Les mêmes documents y ont été **renommés** en
-`official-docs/*` (renommage détecté par git, zéro octet dupliqué : 39,3 Mo au total, pas 78). Le `fr_6eme/`
-encore visible dans quelques anciens fils de l'UI est un vestige de cache — `git clone` puis `ls` répond
-`official-docs/` uniquement.
+```
+24e737f prototype: vert de bout en bout — harnais d'exécution + 3 bugs réels corrigés
+64becc7 docs(prototype): mode d'emploi du test — 12 étapes élève, 6 points enseignant…
+d7301e4 prototype: modèle premier jouable (S2–S10) sans build ni dépendances
+```
 
-**Sécurité :** le token utilisé (portées `Contents` + `Administration` + `Metadata`, expiration 1 jour) n'a
-jamais été écrit dans le dépôt ni dans un fichier de ce projet — il n'a servi que dans l'URL d'une commande
-`git push`/en-tête `Authorization`, et son empreinte locale a été supprimée. À révoquer quand même ici :
-**https://github.com/settings/personal-access-tokens** → `arena-push-qanawa-1j` → **Delete**.
+Ils sont **déjà rébasez sur `e788491`** (vérifié : `git merge-base --is-ancestor e788491 HEAD` → vrai),
+donc le push est un simple **fast-forward**, sans `--force`.
 
-**Après cela**, le vrai démarrage du chantier = coller `prompt-master.txt` dans l'agent de code, qui
-enchaîne `S-1` (référentiel déjà là) → `S0` (scaffold Next.js) → `S1` (schéma + seed des 8 cartes).
+### Pourquoi ils ne sont pas encore en ligne
+Le token n° 2 a été **supprimé du disque dès la fin de la dernière opération** (`rm -f /tmp/.gh2`, vérifié :
+`No such file or directory`). Sans jeton, `git push` échoue (`fatal: could not read Username`) — je ne
+contourne pas l'authentification.
+
+### Deux façons de finir, au choix
+
+**A. Je pousse moi-même (30 secondes de votre côté).** Recréez un jeton fine-grained **jetable**
+(`GUIDE-TOKEN-GITHUB.md` § « TOKEN n° 2 » donne les cases exactes : dépôt unique `douhmans/qanawa-francais`,
+expiration 1 jour, `Contents: Read and write` **seulement** — pas besoin de `Workflows` ni d'`Issues`, tout est déjà fait).
+Collez-le ici ; je lance le push, je vérifie l'arbre en ligne, puis je supprime le fichier et je vous
+rappelle de révoquer.
+
+**B. Vous poussez vous-même**, depuis un terminal où vous êtes connecté à GitHub :
+
+```bash
+cd /home/user/qanawa-francais
+git push origin main          # fast-forward, aucun --force nécessaire
+```
+
+Si le dépôt local n'est pas sur votre machine : `prototype.zip` (43 Ko) est à la racine du workspace — il
+contient le site complet, à déposer dans `prototype/`.
+
+## Ce que le push apporterait
+`prototype/` (9 fichiers : `index.html`, `app.js`, `data.js`, `teacher.html`, `teacher.js`, `styles.css`,
+`sw.js`, `manifest.webmanifest`, `assets/icon.svg` + `README.md`), `tools/harnais_prototype.mjs`,
+`GUIDE-TEST-PROTOTYPE.md`. Rien d'autre — les PDF officiels restent où ils sont, et le CI `curriculum`
+ne sera pas affecté (il ne lit que `data/curriculum-6e.json`).
+
+## Rappel sécurité (à faire de toute façon)
+Révoquez les deux jetons déjà utilisés : <https://github.com/settings/personal-access-tokens>
+→ `arena-push-qanawa-1j` et `arena-ci-issues-1j`. Ils ont une expiration d'un jour, mais la révocation
+immédiate évite d'attendre. Aucun jeton n'a jamais été écrit dans le dépôt.
