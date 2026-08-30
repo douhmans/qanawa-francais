@@ -49,3 +49,11 @@ python3 tools/check_curriculum.py   # le référentiel du programme reste confor
 - **بياناتك لا تغادر الجهاز**: لا حساب، لا خادم، localStorage فقط — التصفير من ⚙️ «تصفير بياناتي».
 - **الروبوت** بقواعد ثابتة (بدون LLM) ليُختبَر التدفّق لا الذكاء.
 - النصوص: M1 قصيدة من الكتاب **في الملك العام** (Raymond Richard، ت 1958)؛ M5/M6/M8 نصوص أصلية محاكية للبرنامج. لا نصّ خاضع لحقوق CNIP هنا.
+
+## نسخة Windows
+
+`win32/Qanawa.exe` (source lisible : `QanawaLauncher.cs` + `QanawaIcon.cs` + `build_exe.bat`) sert ce
+dossier sur `http://localhost:8137/` puis ouvre le navigateur : localStorage fiable, service worker
+autorisé, aucun droit admin. Notice d'installation : `win32/README-WINDOWS.md`.
+Le job `release-windows.yml` (à copier dans `.github/workflows/`) construit et publie le binaire sur
+`windows-latest`, en rejouant `tools/harnais_prototype.mjs` **contre le .exe lui-même**.
