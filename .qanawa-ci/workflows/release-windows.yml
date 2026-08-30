@@ -1,0 +1,122 @@
+name: windows-exe
+
+# Construit le lanceur Windows (Qanawa.exe) puis publie une Release avec le .exe,
+# le dossier prototype à côté, la somme de contrôle SHA-256 et un ZIP prêt à copier
+# sur les postes de l'école. Déclenché par tag `v*` ou à la main (Run workflow).
+#
+# Pourquoi une Release et pas un commit : l'exe est un artefact de build ; le dépôt
+# reste du texte lisible (et la Release porte en plus la signature de GitHub).
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: "Marquer comme pré-rerelease (brouillon de classe)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      DOTNET_NOLOGO: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Localiser le compilateur C# de .NET Framework 4.x
+        id: csc
+        shell: pwsh
+        run: |
+          $cands = @(
+            "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319",
+            "$env:WINDIR\Microsoft.NET\Framework\v4.0.30319"
+          )
+          $dir = $cands | Where-Object { Test-Path (Join-Path $_ 'csc.exe') } | Select-Object -First 1
+          if (-not $dir) { Write-Error "csc.exe introuvable"; exit 1 }
+          "bin=$dir" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          & (Join-Path $dir 'csc.exe') /? | Select-Object -First 1
+
+      - name: Vérification statique du contenu pédagogique
+        shell: pwsh
+        run: |
+          python -m pip install --quiet pypdf 2>$null
+          python tools/check_curriculum.py
+          node tools/check_prototype.mjs
+          node -e "for (const f of ['app.js','data.js','teacher.js','sw.js']) new Function(require('fs').readFileSync('prototype/'+f,'utf8')); console.log('syntaxe JS ✓')"
+
+      - name: Icône + lanceur
+        shell: pwsh
+        run: |
+          $csc = Join-Path '${{ steps.csc.outputs.bin }}' 'csc.exe'
+          New-Item -ItemType Directory -Force -Path out | Out-Null
+          & $csc /nologo /target:exe /out:out\QanawaIcon.exe win32\QanawaIcon.cs
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          & .\out\QanawaIcon.exe out\Qanawa.ico
+          & $csc /nologo /nowarn:0105 /target:winexe /optimize+ /win32icon:out\Qanawa.ico `
+              /out:out\Qanawa.exe `
+              /r:System.dll /r:System.Core.dll /r:System.Drawing.dll /r:System.Windows.Forms.dll `
+              win32\QanawaLauncher.cs
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          "Qanawa.exe : $((Get-Item out\Qanawa.exe).Length) octets"
+
+      - name: Test du serveur intégré (localhost, puis requêtes réelles)
+        shell: pwsh
+        run: |
+          Copy-Item -Recurse -Force prototype out\prototype
+          $p = Start-Process -FilePath out\Qanawa.exe -ArgumentList '--serve-only','--no-browser','--port','8137' -PassThru -NoNewWindow
+          Start-Sleep -Seconds 3
+          try {
+            $h = (Invoke-WebRequest -Uri 'http://localhost:8137/health' -UseBasicParsing -TimeoutSec 8).Content
+            "health: $h"
+            if ($h -notmatch 'prototype') { throw "le serveur ne pointe pas sur le bon dossier" }
+            foreach ($u in '/index.html','/app.js','/data.js','/teacher.html','/styles.css','/sw.js','/manifest.webmanifest','/assets/icon.svg') {
+              $r = Invoke-WebRequest -Uri ("http://localhost:8137" + $u) -UseBasicParsing -TimeoutSec 8
+              if ($r.StatusCode -ne 200) { throw "$u → $($r.StatusCode)" }
+              "  ✓ $u  200  $($r.RawContentLength) o  $($r.Headers['Content-Type'])"
+            }
+            foreach ($bad in '/../../windows/win.ini','/%2e%2e%2f%2e%2e%2fwin.ini') {
+              try {
+                $r = Invoke-WebRequest -Uri ("http://localhost:8137" + $bad) -UseBasicParsing -TimeoutSec 8
+                if ($r.StatusCode -eq 200) { throw "traversée de chemin autorisée sur $bad" }
+              } catch { "  ✓ $bad bloqué" }
+            }
+            (Invoke-WebRequest -Uri 'http://localhost:8137/index.html' -UseBasicParsing).Content |
+              Select-String -Pattern 'app\.js' -Quiet | ForEach-Object { if (-not $_) { throw "index.html servi sans lien vers app.js" } }
+          } finally {
+            Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+          }
+
+      - name: Harnais de parcours complet (le .exe sert les pages, Node les pilote)
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath out\Qanawa.exe -ArgumentList '--serve-only','--no-browser','--port','8137' -PassThru -NoNewWindow
+          Start-Sleep -Seconds 3
+          $env:QANAWA_URL = 'http://localhost:8137'
+          try { node tools/harnais_prototype.mjs } finally { Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue }
+
+      - name: Empaquetage + somme de contrôle
+        shell: pwsh
+        run: |
+          Copy-Item win32\README-WINDOWS.md out\README-WINDOWS.md
+          Copy-Item win32\Qanawa.exe.manifest out\Qanawa.exe.manifest
+          Compress-Archive -Path out\Qanawa.exe, out\prototype, out\README-WINDOWS.md, out\Qanawa.ico -DestinationPath Qanawa-windows.zip -Force
+          (Get-FileHash Qanawa-windows.zip -Algorithm SHA256).Hash.ToLower() | Set-Content Qanawa-windows.zip.sha256
+          "SHA-256 : $(Get-Content Qanawa-windows.zip.sha256)"
+          "Taille ZIP : $((Get-Item Qanawa-windows.zip).Length) octets"
+
+      - name: Publier la Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: false
+          prerelease: ${{ github.event.inputs.prerelease == 'true' }}
+          files: |
+            Qanawa-windows.zip
+            Qanawa-windows.zip.sha256
+            out/Qanawa.exe
+            out/Qanawa.ico
+          body_path: win32/RELEASE-NOTES.md

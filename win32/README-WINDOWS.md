@@ -1,0 +1,86 @@
+# Qanawa sur Windows — mode d'emploi
+
+Deux façons d'utiliser la plateforme sur un poste Windows, selon ce que vous avez sous la main.
+
+---
+
+## A) Le lanceur `Qanawa.exe` (recommandé en classe)
+
+**Ce que c'est** : un petit programme .NET (≈ 26 Ko, aucun installeur, aucun droit
+administrateur) qui :
+1. sert le dossier `prototype\` sur `http://localhost:8137/` (fallback 8138 → 4173 → 8777 → 5151),
+2. ouvre le navigateur par défaut (Edge, sinon Chrome, sinon « navigateur par défaut »),
+3. laisse une icône dans la zone de notification avec **Ouvrir / Quitter**,
+4. si le port est bloqué : ouvre quand même `prototype\index.html` en mode fichier, avec un avertissement.
+
+**Installation (1 minute)**
+1. Dézippez `Qanawa-windows.zip` **entier** (ne sortez pas seulement l'exe).
+2. Placez le contenu dans un dossier en écriture, p. ex. `C:\Qanawa\` —
+   évitez `C:\Program Files` (il faudrait des droits admin pour sauvegarder la progression).
+   Structure attendue :
+   ```
+   C:\Qanawa\Qanawa.exe
+   C:\Qanawa\prototype\index.html
+   C:\Qanawa\prototype\app.js   … etc.
+   ```
+3. Double-cliquez `Qanawa.exe`. Le navigateur s'ouvre sur `http://localhost:8137/`.
+4. Pour le remettre chaque matin : épinglez `Qanawa.exe` dans la barre des tâches
+   (clic droit → *Épingler*), ou créez un raccourci sur le bureau.
+
+**« Windows a protégé votre PC »** (SmartScreen) : c'est normal pour tout binaire non signé.
+→ *Plus d'infos* → *Exécuter quand même*. Pour éviter ce dialogue à chaque poste, signez avec un
+certificat code-signing, ou distribuez le dossier décompressé par l'administrateur réseau.
+Le code source est sous AGPL-3.0 : n'importe qui peut relire `win32/QanawaLauncher.cs` et
+vérifier qu'il n'ouvre **aucun** port autre que la boucle locale et n'écrit que dans `%TEMP%`.
+
+**Pare-feu** : aucune demande, `HttpListener` n'écoute que `localhost`.
+
+**Vérifier soi-même** (optionnel) :
+```bat
+C:\Qanawa\Qanawa.exe --serve-only --port 8137
+curl http://localhost:8137/health      → ok C:\Qanawa\prototype
+curl http://localhost:8137/../../windows/win.ini  → 404 (traversée de chemin bloquée)
+```
+
+**Reconstruire l'exe** (si vous préférez compiler sur place) :
+```bat
+cd C:\Qanawa\win32
+build_exe.bat
+```
+Il utilise le compilateur C# livré avec .NET Framework 4.x (`C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe`),
+présent sur Windows 7 SP1 à Windows 11. Sortie : `win32\bin\Qanawa.exe` + copie du dossier `prototype`.
+
+---
+
+## B) Sans aucun exe : juste le navigateur
+
+1. Ouvrez `prototype\index.html` par double-clic. Ça marche (lecture, quiz, jeux, robot).
+2. Limites en `file://` : le **mode hors ligne** (service worker) est désactivé, l'URL change
+   selon le navigateur, et certains navigateurs isolent `localStorage` → **la progression peut
+   ne pas survivre**. Sur un poste élève, préférez le mode A, ou :
+```bat
+cd C:\Qanawa\prototype
+python -m http.server 8137        (si Python est installé)
+```
+puis `http://localhost:8137/`.
+
+---
+
+## C) Ce qui dépend du poste (à tester une fois sur place)
+
+| Besoin | Selon quoi | Si absent |
+|---|---|---|
+| Voix française | voix `fr-FR` du système | Ajouter la langue Français (France) dans les Paramètres Windows ; sur Android/iOS, mettre à jour les données de prononciation |
+| Dictée de lecture à voix haute | `SpeechRecognition` (Chrome/Edge) | le champ « nombre de mots lus sans erreur » est là : saisie manuelle, même indicateur WCPM |
+| Confettis / animations | accélération graphique | le bouton réglages « réduire les animations » les coupe |
+| Impression du bilan enseignant | imprimante/PDF | `Ctrl+P` dans `teacher.html` (feuille de style `@media print` incluse) |
+
+## D) Désinstallation
+Supprimez le dossier `C:\Qanawa`. Rien n'est écrit ailleurs que dans le profil du navigateur
+(localStorage) et `%TEMP%\qanawa-manifest-*.manifest` (fichier texte de 700 octets, supprimé par le nettoyage habituel).
+
+## E) Note pour l'enseignant
+La progression est **locale au poste et au navigateur** : chaque élève doit utiliser le même poste et
+le même navigateur, sinon il repart de zéro. Le vrai synchronisation par compte (sprint S0–S1) arrive
+avec la version serveur ; l'espace enseignant exporte déjà un **CSV** que vous récupérez sur la clé USB
+de la salle informatique.

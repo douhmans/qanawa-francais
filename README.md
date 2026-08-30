@@ -25,8 +25,30 @@
 ├── tools/check_curriculum.py            ← فحص تطابق المرجع مع البرنامج (موصول بـ CI)
 ├── examples/p11-raw.txt                 ← صفحة 11 الحقيقية من كتاب التلميذ (نصّ مُستخرَج)
 ├── examples/cards/m1-466ae4.json        ← بطاقة مولّدة منها (إثبات عمل الحلقة)
+├── prototype/                           ← نموذج أوّلي يعمل بالكامل (HTML/JS، بلا خادم ولا اعتمادات)
+├── win32/                               ← lanceur Windows (Qanawa.exe) + notice d'installation
+├── tools/harnais_prototype.mjs          ← 51 تحقّقًا يؤدّي المسار كلّه آليًا (Node + jsdom)
+├── tools/check_prototype.mjs            ← فحص مخطّط البطاقات وسياسة «تلميح لا جواب»
+├── tools/package_windows.py             ← يغلّف الـ exe + prototype في zip + SHA-256
+├── GUIDE-TEST-PROTOTYPE.md              ← كيف تختبر النموذج وماذا تتوقّع بالضبط
 └── ops/curriculum.yml     ← CI يعيد التوليد ويقارن
 ```
+
+## نسخة Windows للّوح المدرسي (بدون إنترنت)
+
+`win32/` يحتوي **QanawaLauncher.cs** (‏.NET Framework 4.0، ≈ 26 كيلوبايت): يشغّل خادمًا محليًا
+على `http://localhost:8137/` يقدّم مجلّد `prototype/`، ثم يفتح المتصفّح، ويترك أيقونة في علبة النظام.
+بلا مثبّت، بلا صلاحيات إداري، وبلا أيّ منفذ خارج الجهاز. لماذا خادم محلي وليس نقرة على `index.html`؟
+لأنّ `file://` يمنع service worker (العمل دون اتصال) ويجعل حفظ التقدّم غير موثوق.
+
+```bat
+cd C:\Qanawa\win32 && build_exe.bat      :: يبعث csc.exe الموجود أصلًا في Windows (‏4.x)
+```
+
+والملف الجاهز: `win32/dist/Qanawa-windows.zip` (exe + prototype + ملاحظة التثبيت + SHA-256).
+الـ CI (`.github/workflows/release-windows.yml`) يعيد بناءه على `windows-latest` عند كل وسم `v*`
+وينشره في Releases — وهو أيضًا المكان الوحيد الذي يُختبَر فيه الـ exe على Windows الحقيقية.
+التفاصيل وحدودها (SmartScreen، الأصوات الفرنسية، الترميز حسب الجهاز) في `win32/README-WINDOWS.md`.
 
 ## إعادة الإنتاج والتحقق (كلها شُغِّلت فعليًا في هذا المستودع)
 
