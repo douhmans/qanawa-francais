@@ -72,7 +72,7 @@ function frVoice() {
 let activeUtter = null, cancelToken = 0;
 function speak(text, opts = {}) {
   const my = ++cancelToken;
-  if ("speechSynthesis" in window) {
+  if ("speechSynthesis" in window && typeof SpeechSynthesisUtterance === "function") {
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = "fr-FR"; const v = frVoice(); if (v) u.voice = v;
@@ -224,8 +224,8 @@ function viewHome(root) {
   root.appendChild(grid);
 
   const extra = el("section", { class: "grid two", style: "margin-top:14px" });
-  extra.appendChild(el("button", { class: "btn ghost", onclick: viewPhono }, "🔊 محطة النطق"));
-  extra.appendChild(el("button", { class: "btn ghost", onclick: viewPlacement }, "🧭 اختبار التوجيه (7 د)"));
+  extra.appendChild(el("button", { class: "btn ghost", onclick: () => { location.hash = "#/phono"; } }, "🔊 محطة النطق"));
+  extra.appendChild(el("button", { class: "btn ghost", onclick: () => { location.hash = "#/placement"; } }, "🧭 اختبار التوجيه (7 د)"));
   root.appendChild(extra);
   root.appendChild(el("p", { class: "media-note", style: "margin-top:14px" },
     `ℹ️ ${esc(D.meta.avertissement)}`));
@@ -508,6 +508,7 @@ function stepQuiz(stage, card) {
   const state = { answered: 0, correct: 0 };
   card.quiz.forEach((q, qi) => {
     const box = el("div", { class: "q" });
+    box.dataset.type = q.type;
     box.appendChild(el("div", { class: "prompt" }, `${qi + 1}. ${esc(q.prompt_ar)}`));
     if (q.prompt_fr) box.appendChild(el("div", { class: "fr-hint", dir: "ltr" }, esc(q.prompt_fr)));
     const body = el("div", {});
@@ -517,6 +518,7 @@ function stepQuiz(stage, card) {
       const list = el("div", { class: "order" });
       shuffled.forEach(o => {
         const item = el("div", { class: "item" }, `<span class="fr" dir="ltr">${esc(o.t)}</span>`);
+        item.dataset.i = o.i;
         const mv = el("div", { class: "row" });
         mv.append(el("button", { class: "icon-btn", onclick: () => { const p = item.previousElementSibling; if (p) list.insertBefore(item, p); } }, "▲"),
                   el("button", { class: "icon-btn", onclick: () => { const n = item.nextElementSibling; if (n) list.insertBefore(n, item); } }, "▼"));
@@ -525,12 +527,10 @@ function stepQuiz(stage, card) {
       body.appendChild(list);
       const check = el("button", { class: "btn sm", style: "margin-top:8px" }, "تحقّق");
       check.onclick = () => {
-        const got = Array.from(list.children).map(n => +n.dataset.i).map(() => 0);
-        const orderNow = Array.from(list.children).map(n => +n.getAttribute("data-i"));
+        const orderNow = Array.from(list.children).map(n => +n.dataset.i);
         const ok = JSON.stringify(orderNow) === JSON.stringify(q.order);
         feedback(box, q, ok);
       };
-      Array.from(list.children).forEach((n, k) => n.setAttribute("data-i", shuffled[k].i));
       body.appendChild(check);
     } else if (q.type === "match") {
       const rows = el("div", { class: "grid" });
@@ -668,7 +668,9 @@ function reviewBump(fr, grade) {
   const r = S.review[fr] || (S.review[fr] = { due: today(), reps: 0, ok: 0, ease: 2.3 });
   r.reps++; r.ok = clamp(r.ok + (grade >= 2 ? 1 : grade === 1 ? .6 : -1), 0, 3);
   const ivl = Math.round([0, 1, 3, 7, 16, 35][Math.min(r.reps, 5)] * (1 + (r.ok - 1) * .3));
-  const d = new Date(); d.setDate(d.getDate() + Math.max(1, ivl));
+  const d = new Date();
+  // 1re répétition le jour même : la station de révision se découvre aujourd'hui, pas demain.
+  d.setDate(d.getDate() + (r.reps <= 1 ? 0 : Math.max(1, ivl)));
   r.due = d.toISOString().slice(0, 10);
   save();
 }
@@ -809,7 +811,8 @@ function viewPlacement() {
 /* ------------------------------------------------------------------ robot */
 const TUTOR = {
   mood: /(متوتر|خايف|ما نجمت|ما نفهمتش|غبي|تعبت|حرام|n\u2019arrive|dégo)/i,
-  answer: /(وش الجواب|اعطني الجواب|القولي الحل|ما هو الجواب|la r[ée]ponse|dis moi la r[ée]ponse)/i,
+  // « أعطني الجواب » passe avant « اشرح » : les deux parlent du texte, la différence est pédagogique
+  answer: /(أ?عطني|اعطيني|قول[ي]? ?لي|ما هو|وش|أرني|give me|tell me|what is).{0,14}(الجواب|الحل|الإجابة|la r[ée]ponse|the answer|le secret)/i,
   personal: /(عائلك|سكنى|هاتف|numéro|اسم عائلتك|photo|عنوان)/i,
   offtopic: /(فيس|foot|كرة|أغنية|يوتيوب)/i,
   danger: /(ضرب|عنف|أذى|أوجع|انتحار)/i
@@ -872,7 +875,12 @@ $("#btn-settings").onclick = () => {
   const chk = (label, k) => { const i = el("input", { type: "checkbox" }); i.checked = S[k]; i.onchange = () => { S[k] = i.checked; save(); }; const l = el("label", { class: "row" }); l.append(i, el("span", {}, label)); return l; };
   const range = el("input", { type: "range", min: "0.4", max: "1.1", step: "0.05", value: S.rate });
   range.oninput = () => { S.rate = +range.value; save(); };
-  const reset = el("button", { class: "btn ghost block", onclick: () => { if (confirm("نحذف كل التقدّم والنجوم؟")) { localStorage.removeItem(KEY); location.reload(); } } }, "🗑️ تصفير بياناتي");
+  const reset = el("button", { class: "btn ghost block", onclick: () => {
+    if (confirm("نحذف كل التقدّم والنجوم؟")) {
+      localStorage.removeItem(KEY);
+      if (location.reload) location.reload(); else location.assign(location.pathname);
+    }
+  } }, "🗑️ تصفير بياناتي");
   body.append(el("div", {}, "<b>الصوت الفرنسي</b>", v),
                 el("div", {}, "<b>سرعة القراءة</b>", range),
                 chk("إظهار الترجمة العربية افتراضيًا", "showAr"),
@@ -888,11 +896,17 @@ function route() {
   const h = location.hash.replace(/^#\/?/, "");
   paintTop();
   if (h.startsWith("card/")) return viewCard(h.split("/")[1]);
+  if (h.startsWith("phono")) return viewPhono();
+  if (h.startsWith("placement")) return viewPlacement();
   return viewHome($("#main"));
 }
 window.addEventListener("hashchange", route);
 
 initVoices();
-if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(() => {});
+try {
+  if (navigator && navigator.serviceWorker && navigator.serviceWorker.register && location.protocol !== "file:") {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+} catch (e) { /* pas de SW dans cet environnement : le prototype fonctionne quand même */ }
 route();
 })();

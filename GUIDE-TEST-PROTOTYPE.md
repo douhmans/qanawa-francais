@@ -75,10 +75,14 @@ M1 قصيدة *Le boulanger* (نصّ الكتاب ص10، ومؤلفها في **�
 ## هـ) إعادة الإنتاج والتحقّق من غير متصفّح
 
 ```bash
+# 1) مخطّط البيانات + سياسة «تلميح لا جواب»:
 node tools/check_prototype.mjs
 # cartes: 4 · énoncés: 33 · mots: 25 · items: 22 · contrastes: 6 → ✅ conforme au schéma
 node -e "for (const f of ['app.js','data.js','teacher.js','sw.js']) new Function(require('fs').readFileSync('prototype/'+f,'utf8')); console.log('syntax OK')"
 python3 tools/check_curriculum.py       # ✅ référentiel conforme au programme officiel
+# وبعدها يفتح الحarnais (harnais) المسار كلّه آليًا من نفس العنوان:
+node tools/harnais_prototype.mjs
+# → 40 تحقّقًا (boot، 7 خطوات، malette، قارئ، quiz، نور، سقف النجوم، مراجعة، فونيتيك، فضاء الأستاذ)
 # ولسيّر خادم يدويًا:
 cd prototype && python3 -m http.server 4173 --bind 0.0.0.0
 ```

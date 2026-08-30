@@ -18,6 +18,17 @@
 
 ## التشغيل
 
+Ce prototype est **vérifié par machine**, pas seulement ouvert à l'œil :
+
+```bash
+node tools/check_prototype.mjs      # schéma des cartes + règle « un indice ne contient jamais la réponse »
+node tools/harnais_prototype.mjs    # rejoue TOUT le parcours (élève + enseignant) sur http://127.0.0.1:4173
+```
+
+Le second outil charge les pages depuis le serveur, clique ~40 fois et échoue si une règle produit casse
+(état actuel : ✅ vert). Il a d'ailleurs attrapé deux vrais bugs avant la première utilisation humaine
+(`teacher.js` plantait sur les exemples d'un élève réel ; `#/phono` et `#/placement` n'avaient pas de route).
+
 ```bash
 cd prototype && python3 -m http.server 4173 --bind 0.0.0.0
 # puis http://localhost:4173/   (et  http://localhost:4173/teacher.html)

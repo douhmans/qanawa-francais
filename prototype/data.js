@@ -74,7 +74,7 @@ window.QANAWA_DATA = {
     ],
     quiz: [
       { type: "choice", phase: "globale", prompt_ar: "متى يعمل الخبّاز في القصيدة؟", prompt_fr: "Quand travaille le boulanger ?", choices: ["بينما القرية نائمة", "عند الظهر", "يوم الأحد فقط"], answer: 0,
-        hint: "ابحث في الشطر: «Tandis qu’au village chacun sommeille».", why: "القصيدة تقول: يعمل والجميع يَغمَض." },
+        hint: "ابحث في الجملة 1: «Tandis qu’au village chacun sommeille».", why: "القصيدة تقول: يعمل والجميع يَغمَض." },
       { type: "image", phase: "globale", prompt_ar: "أي صورة تناسب هذا الشطر؟", prompt_fr: "« couleur de soleil »", choices: ["🟡", "🔵", "⬛"], answer: 0,
         hint: "« couleur de soleil » = لونها مثل الشمس.", why: "الأرغفة تخرج صفراء كالشمس." },
       { type: "choice", phase: "analytique", prompt_ar: "بمَ يشبّه الشاعر الأرغفة في القفّف؟", choices: ["بقطط قرفصاء", "بقمر", "بحجارة"], answer: 0,
@@ -83,7 +83,7 @@ window.QANAWA_DATA = {
         hint: "« le four au cœur vermeil » : ما لون الجمر؟", why: "vermeil = rouge vif كلون الجمر." },
       { type: "order", phase: "analytique", prompt_ar: "رتّب الأحداث كما وردت في القصيدة",
         items: ["يشكّل الأرغفة في القفّف", "يدخلها في الفرن", "تخرج بلون الشمس", "القرية تَغمَض"], order: [3, 0, 1, 2],
-        hint: "عُد إلى الشّطر 6 ثم 7 ثم 9 ثم 12.", why: "نوم القرية ← تشكيل ← إدخال الفرن ← خروج الخبز." },
+        hint: "عُد إلى الجملة 6 ثم الجملة 7 ثم الجملة 9 ثم الجملة 12.", why: "نوم القرية ← تشكيل ← إدخال الفرن ← خروج الخبز." },
       { type: "gram", phase: "depass", prompt_ar: "« sortiront » يدلّ على…", choices: ["المستقبل", "الماضي", "الأمر"], answer: 0,
         hint: "الفعل ينتهي بـ -ont ويقع بعد « bientôt ».", why: "futur simple: événement à venir." }
     ],

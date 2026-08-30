@@ -13,6 +13,17 @@ const norm = (s) => String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u
 
 const COMPONENTS = ["phonologie", "lexique", "syntaxe", "fluidite", "compréhension"];
 const ICON = { 1: "🌱", 2: "🌿", 3: "🌳" };
+/* un exemple = « ce que l'élève a produit » → [{mot, api}] ; on accepte tableau ou objet,
+   sans jamais casser la vue si la donnée est absente ou d'une autre forme (données réelles). */
+const exAt = (e, i) => {
+  const x = e.exemples; if (!x) return "";
+  const v = Array.isArray(x) ? x[i] : (x && typeof x === "object" ? Object.values(x)[i] : null);
+  if (!v) return "";
+  if (typeof v === "string") return v;
+  if (Array.isArray(v)) return v.filter(Boolean).join(" ← ");
+  if (typeof v === "object") return Object.values(v).filter(Boolean).join(" ← ");
+  return "";
+};
 
 /* --- l'élève réel de ce navigateur, s'il a utilisé le prototype --- */
 let local = null;
@@ -27,7 +38,8 @@ try {
       lexique: Math.min(3, 1 + (st.garden || []).length / 4 | 0),
       syntaxe: 2, fluidite: Math.min(3, 1 + (st.streak || 0) / 3 | 0),
       comprehension_n: 2, stars: st.stars, garden: (st.garden || []).length,
-      cards: Object.entries(st.done || {}).map(([id, d]) => ({ id, steps: d.steps.length, quiz: d.bestQuiz, wcpm: d.wcpm })),
+      cards: Object.entries(st.done || {}).map(([id, d]) => ({
+        id, steps: Object.keys(d.steps || {}).length, quiz: d.bestQuiz, wcpm: d.wcpm })),
       forces: ["طلب المساعدة بدل الاستسلام", "حديقة كلمات نشِطة", "سلسلة أيام متتابعة"],
       faiblesses: ["يقرأ أسرع ممّا يفهم", "يتخطّى علامات الترقيم", "الغنّتان [ɑ̃]/[ɔ̃]"],
       exemples: [["pâtisserie", "باتيسري"], ["les‿amis", "لِي زَمي"], ["—", "—"]]
@@ -77,7 +89,7 @@ ELEVES.forEach(e => {
       <ul>${(e.forces || []).map(f => `<li>${f}</li>`).join("")}</ul>
     </div><div>
       <span class="pill wine">يحتاج دعمًا</span>
-      <ul>${(e.faiblesses || []).map((f, i) => `<li>${f}${e.exemples && e.exemples[i] ? ` — مثال: <span class="muted" dir="ltr">${e.exemples[i].join(" ← ")}</span>` : ""}</li>`).join("")}</ul>
+      <ul>${(e.faiblesses || []).map((f, i) => { const x = exAt(e, i); return `<li>${f}${x ? ` — مثال: <span class="muted" dir="ltr">${x}</span>` : ""}</li>`; }).join("")}</ul>
     </div></div>`;
   const plan = document.createElement("div"); plan.className = "row";
   const wcpm = e.WCPM || 0;
