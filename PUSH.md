@@ -10,17 +10,17 @@
 | Topics | `tunisie, francais, primaire, edtech, pwa, accessibilite` |
 | Contenu en ligne | **23 fichiers · 39,3 Mo** (`GET /git/trees/f01fa91…?recursive=1`) |
 
-**Reste (2 points, à faire depuis github.com — pas de token nécessaire) :**
+**Reste (1 seul point, à faire depuis github.com — pas de token nécessaire) :**
 
 1. **Activer le contrôle continu du programme** : Repository → *Add file → Create a new file* →
    chemin `.github/workflows/curriculum.yml` → coller le contenu de `ops/curriculum.yml` → commit sur `main`.
    Motif du contournement : GitHub refuse qu'un token sans portée `workflow` écrive sous `.github/workflows/`
    (`remote rejected … without 'workflow' scope`) — on n'a pas demandé cette portée.
-2. **Supprimer l'ancien dossier `fr_6eme/`** (duplicata des mêmes PDF sous des noms obscurs) :
-   ouvrez `https://github.com/douhmans/qanawa-francais/tree/main/fr_6eme` → poubelle sur chaque fichier →
-   commit direct sur `main`. (Un token fine-grained ne peut pas `--force`, d'où la voie UI.)
-   ⚠️ `fr_6eme/` est encore référencé dans `docs-sources-officiels.md` (note « mis à la main ») : rien à changer,
-   les mêmes documents existent désormais proprement dans `official-docs/`.
+**`fr_6eme/` n'a rien à supprimer** : vérifié sur `HEAD 2165285` — `GET /contents/fr_6eme` → **404**, et les 24
+fichiers de l'arbre ne contiennent aucun chemin `fr_6eme/*`. Les mêmes documents y ont été **renommés** en
+`official-docs/*` (renommage détecté par git, zéro octet dupliqué : 39,3 Mo au total, pas 78). Le `fr_6eme/`
+encore visible dans quelques anciens fils de l'UI est un vestige de cache — `git clone` puis `ls` répond
+`official-docs/` uniquement.
 
 **Sécurité :** le token utilisé (portées `Contents` + `Administration` + `Metadata`, expiration 1 jour) n'a
 jamais été écrit dans le dépôt ni dans un fichier de ce projet — il n'a servi que dans l'URL d'une commande
