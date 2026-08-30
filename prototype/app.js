@@ -34,7 +34,7 @@ const LAST = KEY + "#last";
 let WHO = "";
 const keyFor = (p) => KEY + "#" + String(p || "").trim().toLowerCase().replace(/\s+/g, "-");
 const readRaw = (k) => { try { return localStorage.getItem(k); } catch { return null; } }
-const writeRaw = (k, v) => { try { localStorage.setItem(k, v); } catch { } };
+const writeRaw = (k, v) => localStorage.setItem(k, v);   // save() enveloppe d'un try/catch
 /* tous les pseudos déjà enregistrés sur ce navigateur (mode salle) */
 function studentKeys() {
   const out = [];
@@ -57,6 +57,15 @@ const blank = () => ({
 });
 let S = blank();
 try { S = load(); } catch { S = blank(); }   // file:// peut refuser localStorage
+
+/* Détection du stockage : Chrome/Edge refusent localStorage en file:// → l'appli tourne mais
+   n'enregistre rien. On le dit à l'élève (au lieu de le laisser croire que la saisie est cassée)
+   et on le dit à l'adulte, avec la commande exacte qui répare. */
+const STORAGE = (() => {
+  try { localStorage.setItem("qanawa.probe", "1"); localStorage.removeItem("qanawa.probe"); }
+  catch (e) { return (e && e.name === "SecurityError") ? "blocked" : "unavailable"; }
+  return "ok";
+})();
 function load(pseudo) {
   const p = pseudo === undefined ? readRaw(LAST) : pseudo;
   if (p) try { WHO = String(JSON.parse(readRaw(keyFor(p)) || "{}").pseudo || p) || p; } catch { WHO = p; }
@@ -67,8 +76,13 @@ function load(pseudo) {
 function save() {
   let j; try { j = JSON.stringify(S); } catch { return; }
   const p = String(S.pseudo || "").trim();
-  if (p) { writeRaw(keyFor(p), j); writeRaw(LAST, p); if (WHO !== p) WHO = p; }
-  writeRaw(KEY, j);                                                 // lu par  فضاء الأستاذ / export
+  try {
+    if (p) { writeRaw(keyFor(p), j); writeRaw(LAST, p); if (WHO !== p) WHO = p; }
+    writeRaw(KEY, j);                    // lu par فضاء الأستاذ / export
+  } catch (e) {
+    // le stockage vient de se refuser en cours de séance : on prévient, on ne plante pas la leçon
+    if (STORAGE === "ok") { STORAGE = "blocked"; showStorageWarning(true); }
+  }
   paintTop();
 }
 function dayRoll() {
@@ -209,6 +223,32 @@ function markDone(id, step) {
 }
 
 /* ------------------------------------------------------------------ Accueil */
+/* ------------------------------------------------- avertissement de stockage
+   affiché dès que le navigateur refuse localStorage (ouverture en file://) :
+   l'élève peut travailler, mais rien ne sera retenu au rechargement. */
+function showStorageWarning(force) {
+  if (typeof document === "undefined") return;
+  if (!force && STORAGE === "ok") return;
+  if (document.getElementById("storage-warn")) return;
+  const bar = el("div", { id: "storage-warn", class: "warn-bar" });
+  bar.innerHTML = `<b>⚠️ هذا الجهاز لا يحفظ التقدّم الآن</b>
+    <span>فتحتَ الملفّ مباشرة (<code>file://</code>) فيرفض المتصفّح يرفض التخزين ⇒ النجوم والحديقة ستُفقد عند إعادة التحميل.</span>
+    <span class="row" style="flex-wrap:wrap;margin-top:6px">
+      <button class="btn sm" id="sw-ok">تقديم بلا حفظ</button>
+      <button class="btn sm ghost" id="sw-how">كيف أُصلح ذلك؟</button>
+    </span>
+    <div id="sw-fix" hidden class="fr" dir="ltr">Sur Windows : double-cliquez <code>Qanawa.exe</code> (il lance
+      <code>http://localhost:8137/</code>), ou, dans le dossier <code>prototype</code> :
+      <code>python -m http.server 8137</code> puis ouvrez <code>http://localhost:8137/</code>.
+      Le stockage fonctionne aussi sous Firefox en <code>file://</code>.</div>`;
+  const anchor = document.getElementById("main") || document.querySelector("main");
+  if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(bar, anchor);
+  else document.body.insertBefore(bar, document.body.firstChild);
+  const x = bar.querySelector("#sw-ok"); x && (x.onclick = () => bar.remove());
+  const h = bar.querySelector("#sw-how"); const f = bar.querySelector("#sw-fix");
+  h && f && (h.onclick = () => { f.hidden = !f.hidden; });
+}
+
 function viewHome(root) {
   dayRoll();
   root.innerHTML = "";
@@ -264,8 +304,17 @@ function onboarding(root) {
   const box = el("section", { class: "card" });
   box.innerHTML = `<h1>لنبدأ من اسمك ودقيقة واحدة 🌱</h1>
     <p class="muted">لا نطلب اسم العائلة ولا المدرسة ولا رقم الهاتف. يكفي اسم تُعرف به عندنا.</p>`;
-  const inp = el("input", { id: "ob-name", placeholder: "اسم الدّلع (مثال: سلمى)", style: "min-height:56px;width:100%;border-radius:14px;border:1px solid var(--line);padding:0 14px;font:inherit" });
+  const inp = el("input", {
+    id: "ob-name", type: "text", enterkeyhint: "go", inputmode: "text",
+    dir: "auto", lang: "ar", autocomplete: "off",
+    placeholder: "اكتب اسمًا تعرفنا به — مثال: Salma / سلمى",
+    style: "min-height:56px;width:100%;border-radius:14px;border:1px solid var(--line);padding:0 14px;font:inherit;background:#fff;color:#111"
+  });
   box.appendChild(inp);
+  setTimeout(() => { try { inp.focus(); } catch { } }, 60);          // directement prêt à écrire
+  const enter = () => { inp.dataset.commit = "1"; go.click(); };      // Entrée = même chose que le bouton
+  inp.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); enter(); } });
+  if (STORAGE !== "ok") showStorageWarning(true);
   {
     const known = studentKeys();
     if (known.length) {
@@ -285,13 +334,22 @@ function onboarding(root) {
     .forEach(([v, t, s]) => lvl.appendChild(el("button", { class: "btn ghost", onclick: () => { S.voie = v; save(); } },
       `<div style="text-align:right"><b>${t}</b><br><small class="muted">${s}</small></div>`)));
   box.appendChild(lvl);
-  box.appendChild(el("button", {
+  const go = el("button", {
     class: "btn block", style: "margin-top:14px",
     onclick: () => {
-      S.pseudo = (inp.value || "قارئ").trim().slice(0, 16); save();
+      // on n'abandonne jamais l'élève sur un champ vide : un prénom par défaut vaut mieux qu'un blocage
+      const v = String(inp.value || "").trim();
+      S.pseudo = (v || "قارئ").slice(0, 16);
+      save();
+      showStorageWarning(STORAGE !== "ok");   // seulement si le stockage est réellement refusé
       toast("أهلًا بك " + S.pseudo); viewHome($("#main"));
     }
-  }, "ادخل المنصّة"));
+  }, "ادخل المنصّة");
+  box.appendChild(go);
+  box.appendChild(el("p", { class: "muted", style: "margin-top:8px" },
+    STORAGE !== "ok"
+      ? "يمكنك الدخول فورًا: اضغط Enter بعد كتابة الاسم."
+      : "اكتب الاسم ثم Enter (أو اضغط الزرّ). لا نطلب أي معلومة شخصية."));
   root.innerHTML = ""; root.appendChild(box);
 }
 

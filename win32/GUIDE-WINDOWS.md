@@ -18,7 +18,7 @@
 **التحقّق بنفسك** (سطر الأوامر):
 ```bat
 certutil -hashfile Qanawa-windows.zip SHA256
-   → 2014ba0fd76c0f0728a8ff8a225ce4712b92c29a6b7ab937cd594953b9024f5e
+   → 3d666225200be178a9c5065e8802258bc6a8cf752476b95c7216f4576d484e8d
 C:\Qanawa\Qanawa.exe --serve-only --port 8137
 curl http://localhost:8137/health      → ok C:\Qanawa\prototype
 curl http://localhost:8137/../../windows/win.ini  → 404  (الوصول خارج المجلد ممنوع)

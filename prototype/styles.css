@@ -152,3 +152,17 @@ a{color:var(--ink)}
 @media (max-width:520px){ .grid.two{grid-template-columns:1fr} .brand-sub{display:none} .seg .fr{font-size:1.28rem} }
 @media print{ .top,.reader-tools,.tutor,#btn-settings,.no-print{display:none!important} body{background:#fff} .card{box-shadow:none;border:1px solid #bbb} }
 @media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms!important;transition-duration:.01ms!important} }
+
+/* ---------------------------------------------------------------- stockage
+   bandeau affiché quand le navigateur refuse localStorage (ouverture en file://) :
+   on prévient au lieu de laisser l'élève croire que la saisie est cassée. */
+.warn-bar{
+  position:sticky;top:0;z-index:60;
+  margin:0 0 14px;padding:12px 16px;border-radius:0;
+  background:#FFF4D6;border-bottom:2px solid var(--sun,#F6C64B);color:#4A3B00;
+  font-size:1rem;line-height:1.55
+}
+.warn-bar b{display:block;margin-bottom:4px}
+.warn-bar code{background:#fff;padding:1px 6px;border-radius:6px;font-size:.92em}
+.warn-bar .btn.sm{min-height:40px;padding:6px 14px}
+.warn-bar #sw-fix{background:#fff;border:1px solid var(--line,#E6DCC6);border-radius:12px;padding:10px 12px;margin-top:8px;font-size:.9rem}
