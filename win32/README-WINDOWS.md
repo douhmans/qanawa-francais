@@ -136,3 +136,28 @@ node tools/test_file_mode.mjs
 # localStorage REFUSÉ  → cartes = 4 après Entrée, bandeau « لا يحفظ التقدّم » affiché, 0 erreur de script
 # localStorage accepté → cartes = 4 après Entrée, aucun bandeau inutile
 ```
+
+---
+
+## « L'exe ouvre une page vide »
+
+Ce symptôme a trois causes possibles, et le lanceur les distingue maintenant tout seul :
+
+| Cause | Ce que tu vois | Solution |
+|---|---|---|
+| **ZIP lancé sans extraction** (le plus fréquent) | le navigateur affiche une page *Qanawa — fichier manquant* + une fenêtre « démarrage incomplet » | clic droit sur le ZIP → **Extract All / استخراج الكل**, puis lancer `Qanawa.exe` dans le dossier obtenu |
+| **Navigateur ouvert avant que le serveur ait lié le port** | page vide pendant 1 s puis « localhost refusé » | corrigé : `WaitForPort()` attend que le port réponde (4 s max) avant d'ouvrir le navigateur ; sinon clique **Ouvrir** dans la fenêtre du lanceur |
+| **Port déjà pris / bloqué par une politique** | fenêtre « Impossible d'ouvrir le port … » qui ne se ferme plus toute seule | `Qanawa.exe --port 8642` (autre port) ou `cd prototype` puis `python -m http.server 8137` |
+
+**Diagnostic en 2 secondes** (invite de commandes, dans le dossier extrait) :
+
+```bat
+Qanawa.exe --serve-only --port 8137
+curl http://localhost:8137/health
+    ok C:\Qanawa\prototype · 9 fichiers        ← tout va bien, ouvre http://localhost:8137/
+    ok C:\...\prototype · dossier absent       ← le dossier prototype n'est pas à côté de l'exe
+```
+
+`/health` répond toujours, même en cas de problème : c'est lui qui dit si le serveur voit bien les
+9 fichiers. Le lanceur ne ferme plus ses fenêtres d'erreur automatiquement (une console qui clignote
+et disparaît, c'est exactement ce qui fait dire « page vide »).

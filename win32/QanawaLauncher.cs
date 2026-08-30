@@ -40,23 +40,30 @@ namespace Qanawa
         [STAThread]
         private static int Main(string[] args)
         {
-            bool gui = true, browser = true, lan = false;
+            bool gui = true, browser = true, lan = false, fallbackFile = false;
+            string problem = null;
             for (int i = 0; i < args.Length; i++)
             {
                 string a = args[i];
                 if (a == "--serve-only") gui = false;
                 else if (a == "--lan") lan = true;
                 else if (a == "--no-browser") browser = false;
-                else if (a == "--help") { Console.WriteLine("Qanawa.exe [--serve-only] [--no-browser] [--port N]"); return 0; }
+                else if (a == "--help") { Console.WriteLine("Qanawa.exe [--serve-only] [--no-browser] [--lan] [--port N] [--fallback-file] [--no-diagnostic]"); return 0; }
+                else if (a == "--fallback-file") fallbackFile = true;
+                else if (a == "--no-diagnostic") gui = false;
                 else if (a == "--port" && i + 1 < args.Length) _port = ParseInt(args[++i], _port);
             }
             TryDpiAware();
             TryActivationContext();     // styles visuels + compat, sans rc.exe ni manifeste intégré
-            if (!ResolveRoot())
+            bool hasContent = ResolveRoot();
+            if (!hasContent)
             {
-                Fail("Dossier « prototype » introuvable à côté de Qanawa.exe.",
-                     "Dézippe l'archive complète (Qanawa.exe et le dossier prototype/ dans le même répertoire), puis relance.");
-                return 2;
+                // On sert quand même : la page 404 construite par MissingPage() explique le souci,
+                // et la fenêtre de diagnostic reste ouverte sous les yeux (pas une console qui se ferme).
+                _root = Path.Combine(AppDir(), "prototype");
+                problem = "Le dossier « prototype » est introuvable à côté de Qanawa.exe (il est cherché aussi dans les deux niveaux au-dessus). "
+                          + "L'archive a très probablement été lancée sans être décompressée : clic droit sur Qanawa-windows.zip\n"
+                          + "→ « Extract All / استخراج الكل », puis relancer Qanawa.exe dans le dossier extrait.";
             }
             if (!StartServer(lan))
             {
@@ -70,14 +77,22 @@ namespace Qanawa
                          "(et le pare-feu : autoriser le port " + _port + " en réseau privé uniquement.)");
                     return 3;
                 }
-                // Plan B : pas de serveur (port bloqué, restriction locale) → on ouvre le fichier directement.
-                OpenWithShell(Path.Combine(_root, "index.html"));
-                Fail("Serveur local impossible à démarrer — la page a été ouverte en mode fichier.",
-                     "Le surlignage et les jeux fonctionnent, mais la progression peut ne pas être conservée (file://).");
-                return 0;
+                if (fallbackFile && hasContent && OpenWithShell(Path.Combine(_root, "index.html")))
+                {
+                    Fail("Serveur local impossible à démarrer — la page a été ouverte en mode fichier.",
+                         "Le surlignage et les jeux fonctionnent, mais la progression peut ne pas être conservée (file://).");
+                    return 0;
+                }
+                Fatal("Impossible d'ouvrir le port " + _port + " sur cette machine.",
+                      "Essayez un autre port :   Qanawa.exe --port 8642\n" +
+                      "ou servez le dossier à la main :   cd prototype  puis  python -m http.server 8137\n" +
+                      "(le micro et le mode hors ligne demandent http://localhost, pas file://)");
+                return 4;
             }
+            WaitForPort(4000);            // sinon le navigateur part trop tôt → page vide
             if (browser && !lan) OpenBrowser();
-            if (lan) PrintLanAddresses();
+            if (problem != null) ShowDiagnostic(problem);   // après ouverture : l'enseignant voit les deux
+            if (lan) { PrintLanAddresses(); if (problem != null) ShowDiagnostic(problem); }
             if (!gui)
             {
                 Console.WriteLine("Qanawa: " + Url() + "  (Ctrl+C pour arrêter)");
@@ -190,20 +205,43 @@ namespace Qanawa
             HttpListenerResponse res = ctx.Response;
             string path = req.Url == null ? "/" : (req.Url.AbsolutePath ?? "/");
             if (path == "/favicon.ico") { WriteBytes(res, 204, "image/x-icon", new byte[0]); return; }
-            if (path == "/health") { WriteText(res, 200, "text/plain; charset=utf-8", "ok " + _root); return; }
+            if (path == "/health") { WriteText(res, 200, "text/plain; charset=utf-8", HealthLine()); return; }
             if (path == "/") path = "/index.html";
 
             string rel = path.Replace('/', Path.DirectorySeparatorChar).TrimStart(Path.DirectorySeparatorChar);
             string full;
             try { full = Path.GetFullPath(Path.Combine(_root, rel)); }
             catch { WriteText(res, 400, "text/plain; charset=utf-8", "chemin invalide"); return; }
-            if (!full.StartsWith(_root, StringComparison.OrdinalIgnoreCase) || !File.Exists(full))
-            { WriteText(res, 404, "text/plain; charset=utf-8", "introuvable: " + rel); return; }
+            if (!full.StartsWith(_root, StringComparison.OrdinalIgnoreCase))
+            { WriteText(res, 403, "text/plain; charset=utf-8", "hors du dossier servi: " + rel); return; }
+            if (!File.Exists(full))
+            { WriteHtml(res, 404, MissingPage(rel)); return; }
 
             byte[] data;
             try { data = File.ReadAllBytes(full); }
             catch { WriteText(res, 500, "text/plain; charset=utf-8", "lecture impossible"); return; }
             WriteBytes(res, 200, Mime(full), data);
+        }
+
+        private static string HealthLine()
+        {
+            return "ok " + _root + " · " + (Directory.Exists(_root) ? Directory.GetFiles(_root).Length + " fichiers" : "dossier absent");
+        }
+
+        /* Une page d'erreur lisible : « écran blanc » ne doit jamais être le message renvoyé à un enseignant. */
+        private static string MissingPage(string rel)
+        {
+            string safe = WebUtility.HtmlEncode(rel);
+            return "<!doctype html><meta charset=utf-8><title>Qanawa — fichier manquant</title>" +
+              "<body style=\"font:17px/1.7 system-ui,sans-serif;background:#FBF7EF;color:#2a2620;padding:24px;max-width:760px;margin:auto\">" +
+              "<h2 style=\"color:#1B4F8C\">📂 الملفّ <code>" + safe + "</code> غير موجود داخل المجلد المخدوم</h2>" +
+              "<p dir=\"ltr\"><b>Fichier attendu :</b> <code>" + WebUtility.HtmlEncode(Path.Combine(_root ?? "?", rel)) + "</code></p>" +
+              "<p style=\"background:#FFF4D6;border:1px solid #F6C64B;padding:12px 14px;border-radius:12px\">" +
+              "Cela vient presque toujours d'une <b>archive lancée sans être décompressée</b> : l'exe s'exécute alors dans un " +
+              "dossier temporaire qui ne contient pas <code>prototype\\</code>.<br>" +
+              "→ clic droit sur le ZIP → <b>Extract All / Extraire tout</b>, puis lancer <code>Qanawa.exe</code> dans le dossier extrait." +
+              "<br><span dir=\"rtl\">استخرج الملفّ كاملاً (كليك يمين ← Extract All) ثم شغّل Qanawa.exe من المجلّد الجديد.</span></p>" +
+              "<p dir=\"ltr\"><a href=\"/health\">/health</a> — <a href=\"/index.html\">/index.html</a></p></body>";
         }
 
         private static void WriteBytes(HttpListenerResponse res, int code, string mime, byte[] data)
@@ -220,6 +258,9 @@ namespace Qanawa
         private static void WriteText(HttpListenerResponse res, int code, string mime, string text)
         { WriteBytes(res, code, mime, Encoding.UTF8.GetBytes(text)); }
 
+        private static void WriteHtml(HttpListenerResponse res, int code, string html)
+        { WriteBytes(res, code, "text/html; charset=utf-8", Encoding.UTF8.GetBytes(html)); }
+
         private static string Mime(string f)
         {
             string e = Path.GetExtension(f).ToLowerInvariant();
@@ -233,6 +274,26 @@ namespace Qanawa
             if (e == ".mp3") return "audio/mpeg";
             if (e == ".txt") return "text/plain; charset=utf-8";
             return "application/octet-stream";
+        }
+
+        /* On attend que le port réponde : ouvrir le navigateur avant le Start() de HttpListener
+           produit exactement le symptôme remonté (« page vide »). */
+        private static void WaitForPort(int ms)
+        {
+            int spent = 0;
+            while (spent < ms)
+            {
+                try
+                {
+                    using (System.Net.Sockets.TcpClient c = new System.Net.Sockets.TcpClient())
+                    {
+                        IAsyncResult r = c.BeginConnect(System.Net.IPAddress.Loopback, _port, null, null);
+                        if (r.AsyncWaitHandle.WaitOne(200) && c.Connected) { try { c.EndConnect(r); } catch { } return; }
+                    }
+                }
+                catch { }
+                Thread.Sleep(120); spent += 320;
+            }
         }
 
         /* ------------------------------------------------------------ browser */
@@ -322,7 +383,8 @@ namespace Qanawa
 
                 Label status = new Label();
                 status.Name = "status";
-                status.Text = "Le serveur tourne : tu peux fermer cette fenêtre sans casser l'appli (icône en bas à droite).";
+                status.Text = "Serveur prêt sur " + Url() + ". Si le navigateur reste vide : bouton « Ouvrir » " +
+                    "ci-dessus, ou relance avec --serve-only dans une invite de commandes pour lire les erreurs.";
                 status.Left = 18; status.Top = 140; status.Width = 460; status.Height = 46;
                 _form.Controls.Add(status);
 
@@ -336,6 +398,34 @@ namespace Qanawa
                 // on attend que l'utilisateur coupe le processus.
                 while (!_stopping) Thread.Sleep(500);
             }
+        }
+
+        /* Fenêtre de diagnostic : ne ferme pas toute seule, dit le problème en français et en arabe,
+           et propose « continuer quand même » (le serveur reste actif, la page 404 explique). */
+        private static void ShowDiagnostic(string problem)
+        {
+            Console.WriteLine();
+            Console.WriteLine("  ⚠ " + problem);
+            Console.WriteLine("  Le serveur reste actif sur " + Url() + " — Fermer cette fenêtre suffit à l'arrêter.");
+            Console.WriteLine();
+            if (_form != null) { SetStatus("⚠ " + problem); return; }
+            try
+            {
+                Form f = new Form();
+                f.Text = "Qanawa — démarrage incomplet";
+                f.FormBorderStyle = FormBorderStyle.FixedSingle; f.MaximizeBox = false;
+                f.StartPosition = FormStartPosition.CenterScreen; f.Width = 620; f.Height = 280;
+                Label l = new Label(); l.Text = "⚠  " + problem; l.Left = 16; l.Top = 16; l.Width = 580; l.Height = 150;
+                Button open = new Button(); open.Text = "Ouvrir quand même dans le navigateur"; open.Left = 16; open.Top = 180; open.Width = 270; open.Height = 40;
+                open.Click += delegate { OpenBrowser(); };
+                Button quit = new Button(); quit.Text = "Quitter"; quit.Left = 300; quit.Top = 180; quit.Width = 120; quit.Height = 40;
+                quit.Click += delegate { _stopping = true; try { f.Close(); } catch { } };
+                Label hint = new Label(); hint.Text = "Serveur : " + Url() + "   ·   diagnostic : " + Url() + "health";
+                hint.Left = 16; hint.Top = 228; hint.Width = 580;
+                f.Controls.Add(l); f.Controls.Add(open); f.Controls.Add(quit); f.Controls.Add(hint);
+                Application.Run(f);
+            }
+            catch { while (!_stopping) Thread.Sleep(700); }   // pas d'interface dispo : on laisse la console lisible
         }
 
         private static void SetStatus(string text)
@@ -457,6 +547,18 @@ namespace Qanawa
             try { if (_listener != null) { _listener.Stop(); _listener.Close(); } } catch { }
         }
 
+        /* Erreur bloquante : on affiche, et on reste affiché (une console qui se referme
+           immédiatement = « l'exe lance une page vide » pour l'enseignant). */
+        private static void Fatal(string msg, string help)
+        {
+            Console.WriteLine();
+            Console.WriteLine("  ✗ " + msg);
+            foreach (string l in help.Split(new string[] { "\n" }, StringSplitOptions.None)) Console.WriteLine("    " + l);
+            Console.WriteLine("  (appuyez sur Entrée pour fermer)");
+            try { if (Environment.UserInteractive) MessageBox.Show(help + "\n\n" + msg, "Qanawa", MessageBoxButtons.OK, MessageBoxIcon.Error); } catch { }
+            try { Console.In.ReadLine(); } catch { }
+        }
+
         private static void Fail(string msg, string help)
         {
             Console.WriteLine("Qanawa: " + msg);
@@ -467,6 +569,8 @@ namespace Qanawa
                     MessageBox.Show(help + "\n\n" + msg, "Qanawa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch { }
+            // une fenêtre de console qui se ferme immédiatement ne sert à personne : on attend
+            if (!Environment.UserInteractive) { Console.WriteLine("  (appuyez sur Entrée pour fermer)"); try { Console.In.ReadLine(); } catch { } }
         }
     }
 
