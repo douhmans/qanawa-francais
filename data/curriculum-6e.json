@@ -1,0 +1,754 @@
+{
+  "meta": {
+    "grade": "6ème année de l'Enseignement de Base (Tunisie)",
+    "matiere": "Français — lecture/compréhension",
+    "manuel": "Un pas de plus… vers le collège (Manuel de lecture), CNIP",
+    "guide": "Guide méthodologique, CNIP, 216 p.",
+    "organisation": "8 modules / 4 unités / journée-paliers / module d'évaluation-remédiation",
+    "volume_horaire": "8 h / semaine",
+    "copyright": "© Tous droits réservés au CNIP — usage pédagogique privé, diffusion publique interdite",
+    "competence_terminale_lecture": "Intégrer les mécanismes de base de la lecture (décodage et encodage) pour lire des textes variés et rendre compte de sa compréhension."
+  },
+  "modules": [
+    {
+      "module": 1,
+      "theme": "Travail",
+      "slogan": "Travailler pour s'épanouir",
+      "sous_themes_poematiques": [
+        "Au travail",
+        "Le boulanger"
+      ],
+      "projet_ecriture": "Je raconte un événement en rapport avec « le travail »",
+      "objectifs_oraux": [
+        "Informer/s'informer",
+        "Décrire/raconter un événement",
+        "Situer des lieux",
+        "Justifier un choix"
+      ],
+      "outils_langue": {
+        "grammaire": "Reconnaître et utiliser les déterminants, les noms et les pronoms personnels",
+        "conjugaison": "Reconnaître les trois temps : présent, passé composé, futur ; utiliser verbes à l'infinitif et conjugués",
+        "orthographe": "Utiliser l'infinitif après à / de / par / pour / sans"
+      },
+      "textes": {
+        "lecture": [
+          "Apprentie comédienne",
+          "Une parfumeuse en herbe",
+          "Témoignages"
+        ],
+        "documentaire": "Quel métier choisir ?",
+        "action": "Un tableau découpé",
+        "vocabulaire": "Page vocabulaire"
+      },
+      "unite": 1
+    },
+    {
+      "module": 2,
+      "theme": "Médias et nouvelles technologies",
+      "slogan": "Communiquer avec les autres",
+      "sous_themes_poematiques": [
+        "Les machines",
+        "Conversation"
+      ],
+      "projet_ecriture": "Unité 1 (phase 1) : mise au point du journal de la classe — réalisation de la maquette de la « Une » (projet porté par l'unité, finalisé en J7)",
+      "projet_portee": "unité 1 (le même projet sert les modules 1 et 2 en phase 1)",
+      "objectifs_oraux": [
+        "Informer/s'informer",
+        "Exprimer un point de vue",
+        "Porter un jugement",
+        "Décrire une scène"
+      ],
+      "outils_langue": {
+        "grammaire": "Reconnaître et utiliser les déterminants possessifs et démonstratifs",
+        "conjugaison": "Conjuguer les verbes en er, en ir (usuels) et du 3e groupe à l'impératif",
+        "orthographe": "Écrire correctement les homophones a / à"
+      },
+      "textes": {
+        "lecture": [
+          "Le vieux robot",
+          "Une télé pas comme les autres",
+          "Le monde du journalisme"
+        ],
+        "documentaire": "Les médias / Faire « son journal »",
+        "action": "Faire la maquette de la « Une »",
+        "vocabulaire": "Page vocabulaire"
+      },
+      "unite": 1
+    },
+    {
+      "module": 3,
+      "theme": "Paix et tolérance",
+      "slogan": "Accepter les autres",
+      "sous_themes_poematiques": [
+        "Marie et moi",
+        "Donne autour de toi"
+      ],
+      "projet_ecriture": "Je raconte un événement sur le thème de la solidarité et je fais parler des personnages dans mon récit",
+      "objectifs_oraux": [
+        "Décrire des scènes",
+        "Porter un jugement",
+        "Prendre position",
+        "Justifier un point de vue"
+      ],
+      "outils_langue": {
+        "grammaire": "Reconnaître et utiliser l'adjectif épithète et l'adjectif attribut",
+        "conjugaison": "Conjuguer être et avoir au futur et au passé composé",
+        "orthographe": "Écrire correctement les homophones son / sont"
+      },
+      "textes": {
+        "lecture": [
+          "Le petit lapin tout blanc",
+          "Le nouveau costume",
+          "L'Indien qui ne savait pas courir"
+        ],
+        "documentaire": "Les ressemblances et les différences entre les êtres humains",
+        "action": "Le bouquet de bienvenue",
+        "vocabulaire": "Page vocabulaire"
+      },
+      "unite": 2
+    },
+    {
+      "module": 4,
+      "theme": "Solidarité et citoyenneté",
+      "slogan": "S'entraider pour mieux réussir",
+      "sous_themes_poematiques": [
+        "L'homme et le chien",
+        "Si vous n'avez rien à me dire"
+      ],
+      "projet_ecriture": "Je raconte un événement en rapport avec la solidarité et j'intègre un passage descriptif",
+      "objectifs_oraux": [
+        "Décrire",
+        "Raconter",
+        "Informer/s'informer",
+        "Exprimer un point de vue"
+      ],
+      "outils_langue": {
+        "grammaire": "Utiliser la phrase négative : ne… plus, ne… jamais",
+        "conjugaison": "Conjuguer les verbes usuels du type finir au passé composé et au futur",
+        "orthographe": "Écrire correctement les homophones et / est"
+      },
+      "textes": {
+        "lecture": [
+          "Un bon compagnon",
+          "L'écureuil et l'escargot",
+          "Le courage d'un jeune apprenti"
+        ],
+        "documentaire": "L'école, un droit pour tous",
+        "action": "Le jeu du Petit Poucet",
+        "vocabulaire": "Page vocabulaire"
+      },
+      "unite": 2
+    },
+    {
+      "module": 5,
+      "theme": "Environnement",
+      "slogan": "Sauver la nature",
+      "sous_themes_poematiques": [
+        "Qu'elle est belle la terre !",
+        "L'arbre volant"
+      ],
+      "projet_ecriture": "Je raconte un événement en rapport avec l'environnement et j'intègre un passage descriptif",
+      "objectifs_oraux": [
+        "Décrire une situation/une scène",
+        "Donner un avis/le justifier",
+        "Informer/s'informer"
+      ],
+      "outils_langue": {
+        "grammaire": "Utiliser le complément essentiel et le complément non essentiel",
+        "conjugaison": "Conjuguer les verbes du type prendre et mettre au passé composé et au futur",
+        "orthographe": "Accorder le verbe avec son sujet"
+      },
+      "textes": {
+        "lecture": [
+          "Sauvez Keiko",
+          "La ménagère de la mer",
+          "Les parapluies"
+        ],
+        "documentaire": "Comment éviter le gaspillage de l'eau",
+        "action": "Fabriquer une famille de cygnes",
+        "vocabulaire": "Page vocabulaire"
+      },
+      "unite": 3
+    },
+    {
+      "module": 6,
+      "theme": "Santé et bien-être",
+      "slogan": "Être en forme et mieux se porter",
+      "sous_themes_poematiques": [
+        "Un matin",
+        "Le vélo à mille pattes"
+      ],
+      "projet_ecriture": "Je raconte un événement en rapport avec la santé et j'intègre des répliques et un passage descriptif",
+      "objectifs_oraux": [
+        "Donner des conseils",
+        "Informer/s'informer",
+        "Raconter",
+        "Décrire une personne"
+      ],
+      "outils_langue": {
+        "grammaire": "Utiliser le complément de lieu",
+        "conjugaison": "Conjuguer aller et faire au passé composé et au futur",
+        "orthographe": "Accorder en genre et en nombre les adjectifs du type heureux/heureuse, mûr/mûre"
+      },
+      "textes": {
+        "lecture": [
+          "La jeune acrobate",
+          "Des vignettes… pour un ballon",
+          "La lettre de Jean"
+        ],
+        "documentaire": "Comment lutter contre le stress",
+        "action": "Faire des exercices d'étirement",
+        "vocabulaire": "Page vocabulaire"
+      },
+      "unite": 3
+    },
+    {
+      "module": 7,
+      "theme": "Loisirs",
+      "slogan": "Profiter de son temps libre",
+      "sous_themes_poematiques": [
+        "Dans le grenier de ma grand-mère",
+        "Pour faire le portrait d'un oiseau"
+      ],
+      "projet_ecriture": "J'écris une lettre à un ami ou à un parent pour lui parler de mes loisirs",
+      "objectifs_oraux": [
+        "Décrire-raconter",
+        "Exprimer un sentiment, une préférence, un refus",
+        "Émettre des hypothèses"
+      ],
+      "outils_langue": {
+        "grammaire": "Utiliser le complément de temps",
+        "conjugaison": "Conjuguer dire, lire, écrire au présent, passé composé, futur et impératif",
+        "orthographe": "Accorder les adjectifs du type neuf/neuve, gentil/gentille, beau/belle, bon/bonne"
+      },
+      "textes": {
+        "lecture": [
+          "La lettre de Paul",
+          "La lettre de Daniel",
+          "La lettre de Monsieur Crêpe"
+        ],
+        "documentaire": "Peinture, sculpture et théâtre de marionnettes",
+        "action": "Jouer au nombre pensé",
+        "vocabulaire": "Page vocabulaire"
+      },
+      "unite": 4
+    },
+    {
+      "module": 8,
+      "theme": "Culture et découverte du monde",
+      "slogan": "Découvrir d'autres modes de vie",
+      "sous_themes_poematiques": [
+        "Une graine voyageait",
+        "Le vent a fait le tour du monde"
+      ],
+      "projet_ecriture": "Je raconte un événement en rapport avec d'autres modes de vie et j'intègre un passage descriptif",
+      "objectifs_oraux": [
+        "Informer/s'informer",
+        "Décrire un lieu, un personnage",
+        "Exprimer un avis/une préférence",
+        "Décrire un mode de vie"
+      ],
+      "outils_langue": {
+        "grammaire": "Utiliser le complément de manière",
+        "conjugaison": "Conjuguer vouloir et pouvoir au présent",
+        "orthographe": "Accorder le participe passé employé avec être"
+      },
+      "textes": {
+        "lecture": [
+          "Le grand voyage",
+          "Une sortie de classe au Canada",
+          "L'île au trésor"
+        ],
+        "documentaire": "Quelques fêtes d'autres pays",
+        "action": "Fabriquer la tour Eiffel",
+        "vocabulaire": "Page vocabulaire"
+      },
+      "unite": 4
+    }
+  ],
+  "journees_type": [
+    {
+      "id": "J1",
+      "activites": [
+        "Mise en train (poème ou chant)",
+        "Expression orale: présentation du module et du projet d'écriture",
+        "Lecture/compréhension (texte 1)",
+        "Grammaire"
+      ]
+    },
+    {
+      "id": "J2",
+      "activites": [
+        "Mise en train",
+        "Expression orale",
+        "Lecture/fonctionnement (texte 1)",
+        "Conjugaison"
+      ]
+    },
+    {
+      "id": "J3",
+      "activites": [
+        "Mise en train",
+        "Expression orale",
+        "Lecture/compréhension (texte 2)",
+        "Projet d'écriture"
+      ]
+    },
+    {
+      "id": "J4",
+      "activites": [
+        "Expression orale",
+        "Lecture/fonctionnement (texte 2)",
+        "Orthographe",
+        "Projet d'écriture"
+      ]
+    },
+    {
+      "id": "J5",
+      "activites": [
+        "Autodictée",
+        "Expression orale",
+        "Lecture/compréhension (texte 3)",
+        "Grammaire/conjugaison (intégration)"
+      ]
+    },
+    {
+      "id": "J6",
+      "activites": [
+        "Expression orale",
+        "Lecture/fonctionnement (texte 3)",
+        "Orthographe",
+        "Projet d'écriture"
+      ]
+    },
+    {
+      "id": "J7",
+      "activites": [
+        "Lecture documentaire",
+        "Dictée (à trous / à préparation)",
+        "Projet d'écriture (production)",
+        "Lecture suivie (bibliothèque)"
+      ]
+    },
+    {
+      "id": "J8",
+      "activites": [
+        "Mise en train",
+        "Page vocabulaire: J'ouvre la boîte à mots / Je joue avec les mots",
+        "Lecture-action",
+        "Bibliothèque de classe"
+      ]
+    }
+  ],
+  "organisation_officielle": {
+    "source": "Guide méthodologique, CNIP, p.15-16",
+    "structure": [
+      "module d'évaluation des prérequis (2 à 3 semaines)",
+      "8 modules d'apprentissage (chacun = 2 semaines / 8 séances / 8 h par semaine)",
+      "4 modules d'intégration = journées-paliers (2 jours, +1 journée si besoin)",
+      "4 modules d'évaluation-remédiation (1 semaine = 4 séances)"
+    ],
+    "unites": "les modules sont regroupés en 4 unités d'apprentissage (M1+M2, M3+M4, M5+M6, M7+M8)",
+    "phase_1": {
+      "modules": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "projets_ecriture": "un projet d'écriture par unité (donc 2 projets)",
+      "parcours_module_pair": "J1 mise au point → J3 remédiation → J4 réécriture → J7 finalisation"
+    },
+    "phase_2": {
+      "modules": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "projets_ecriture": "un projet d'écriture par module (donc 4 projets)",
+      "parcours_module_impair": "J1 présentation → J3 entraînement 1 + construction de l'outil d'aide → J4 entraînement 2 → J7 production"
+    }
+  },
+  "manuel_pages_par_module": {
+    "1": [
+      9,
+      24
+    ],
+    "2": [
+      25,
+      40
+    ],
+    "3": [
+      41,
+      55
+    ],
+    "4": [
+      56,
+      71
+    ],
+    "5": [
+      72,
+      86
+    ],
+    "6": [
+      87,
+      101
+    ],
+    "7": [
+      102,
+      116
+    ],
+    "8": [
+      117,
+      135
+    ]
+  },
+  "sequence_lecture": {
+    "source": "Guide méthodologique, CNIP, p.33-34",
+    "phases": [
+      {
+        "id": "anticipation",
+        "officiel": "Anticipation",
+        "fr": "Émettre des hypothèses à partir du titre, des illustrations, du préambule ; identifier le type de texte à partir de sa typographie.",
+        "ar": "تنبّؤات من العنوان والصورة والمقدمة + تحديد نوع النص من هندسته"
+      },
+      {
+        "id": "globale",
+        "officiel": "Approche globale",
+        "fr": "Lecture silencieuse pour vérifier les hypothèses et contrôler la compréhension globale (informations importantes, paramètres de la situation de communication, idée principale).",
+        "ar": "قراءة صامتة للتحقق من الفرضيات والسيطرة على المعنى العام"
+      },
+      {
+        "id": "analytique",
+        "officiel": "Approche analytique",
+        "fr": "Affiner la construction du sens : analyser les informations, rechercher les indices et les mettre en relation.",
+        "ar": "تحليل المعلومات وربط القرائن لبناء المعنى بدقّة"
+      },
+      {
+        "id": "vocabulaire",
+        "officiel": "Compréhension du vocabulaire",
+        "fr": "Le manuel explique en moyenne deux mots par texte ; l'élève cherche le reste dans le dictionnaire.",
+        "ar": "الكتاب يشرح كلمتين فقط لكل نص ← المنصة تشرح كل كلمة جديدة"
+      },
+      {
+        "id": "synthese",
+        "officiel": "Synthèse et dépassement",
+        "fr": "Relire (lecture dialoguée, concours de lecture), recopier un passage, donner un avis sur le personnage, dégager la valeur, changer le titre, imaginer une autre fin, dessiner, dramatiser, résumer.",
+        "ar": "إعادة قراءة، رأي في البطل، استخراج القيمة، نهاية بديلة، تمثيل مشهد، تلخيص"
+      }
+    ],
+    "nombre_de_textes_par_module": 5,
+    "seances_par_texte_de_lecture": 2
+  },
+  "phonetique_contrastes_officiels": [
+    {
+      "pair": "[y]/[u]",
+      "exemples": [
+        "tu",
+        "tout"
+      ],
+      "ar": "الضمة الفرنسية مقابل الضمة العربية"
+    },
+    {
+      "pair": "[y]/[i]",
+      "exemples": [
+        "lit",
+        "lue"
+      ],
+      "ar": "الضمة الفرنسية مقابل الكسرة"
+    },
+    {
+      "pair": "[p]/[b]",
+      "exemples": [
+        "poule",
+        "boule"
+      ],
+      "ar": "p/b (لا وجود لـ p في العربية)"
+    },
+    {
+      "pair": "[f]/[v]",
+      "exemples": [
+        "film",
+        "vil"
+      ],
+      "ar": "f/v"
+    },
+    {
+      "pair": "[e]/[ɛ]",
+      "exemples": [
+        "été",
+        "ait"
+      ],
+      "ar": "الفتحة المغلقة/المفتوحة"
+    },
+    {
+      "pair": "[a]/[ɑ̃]",
+      "exemples": [
+        "la",
+        "lan"
+      ],
+      "ar": "شفوي مقابل غنّي"
+    },
+    {
+      "pair": "[o]/[ɔ̃]",
+      "exemples": [
+        "mot",
+        "mon"
+      ],
+      "ar": "شفوي مقابل غنّي"
+    },
+    {
+      "pair": "[ɑ̃]/[ɔ̃]",
+      "exemples": [
+        "an",
+        "on"
+      ],
+      "ar": "بين الغنّيات"
+    },
+    {
+      "pair": "[ɛj]/[œj]",
+      "exemples": [
+        "soleil",
+        "oeil"
+      ],
+      "ar": "eil/euil"
+    },
+    {
+      "pair": "[ɛʁ]/[œʁ]",
+      "exemples": [
+        "mer",
+        "meur"
+      ],
+      "ar": "er/eur"
+    },
+    {
+      "pair": "e caduc",
+      "exemples": [
+        "jouerai",
+        "pâtisserie"
+      ],
+      "ar": "حذف الـ e الخفيفة"
+    },
+    {
+      "pair": "liaisons",
+      "exemples": [
+        "ils‿arrivent",
+        "dix‿avions"
+      ],
+      "ar": "الاتصالات الإجبارية"
+    },
+    {
+      "pair": "enchaînements",
+      "exemples": [
+        "un‿ami",
+        "il‿a eu"
+      ],
+      "ar": "الوصل بين الكلمات"
+    },
+    {
+      "pair": "intonation",
+      "exemples": [
+        "déclaratif",
+        "interrogatif",
+        "exclamatif",
+        "impératif"
+      ],
+      "ar": "نبرة الجمل الأربع"
+    },
+    {
+      "pair": "nombres",
+      "exemples": [
+        "2 chiffres",
+        "3 chiffres"
+      ],
+      "ar": "نطق الأرقام قبل ساكن/متحرك"
+    }
+  ],
+  "criteres_evaluation_ecrit": [
+    {
+      "id": "C1",
+      "nom": "Adéquation avec la situation de communication"
+    },
+    {
+      "id": "C2",
+      "nom": "Lisibilité de l'écriture"
+    },
+    {
+      "id": "C3",
+      "nom": "Correction linguistique"
+    },
+    {
+      "id": "C4",
+      "nom": "Correction orthographique"
+    },
+    {
+      "id": "C5",
+      "nom": "Cohérence du texte"
+    },
+    {
+      "id": "C6",
+      "nom": "Originalité des idées"
+    },
+    {
+      "id": "C7",
+      "nom": "Présentation matérielle"
+    }
+  ],
+  "niveaux_maitrise": {
+    "0": "Aucune maîtrise",
+    "+": "Maîtrise minimale insuffisante",
+    "++": "Maîtrise minimale",
+    "+++": "Maîtrise maximale"
+  },
+  "logos_eleve": [
+    "Je récite",
+    "Je lis",
+    "Je lis pour m'informer et me documenter",
+    "Je lis pour agir",
+    "J'ouvre la boîte à mots",
+    "Je joue avec les mots",
+    "Je m'entraîne",
+    "J'observe",
+    "Je retiens",
+    "Je produis",
+    "Je fais le point"
+  ],
+  "poemes": {
+    "Le boulanger": "Raymond RICHARD",
+    "Au travail": "Auguste BRIZEUX"
+  },
+  "contes_lecture_suivie": [
+    "Malik et Flèche (Régis Delpeuch)",
+    "La paire de chaussures (Pierre Gripari)",
+    "Grain-d'Aile (Paul Éluard)",
+    "La boule de cristal (Frères Grimm)"
+  ],
+  "chants": [
+    "Meunier, tu dors",
+    "Voulez-vous danser grand-mère"
+  ],
+  "fiche_classe_pl": {
+    "pdf": "module-prerequis-6e.pdf",
+    "pages": 25,
+    "editeur": "CNIP, code 521613 — module des prérequis (PL1→PL20) pour le maître",
+    "usage": "feuilles reproductibles officielles : 4 pour l'évaluation des prérequis + 16 pour les modules 1-8 (à photocopier/scanner)",
+    "copyright": "© CNIP — diffusion publique interdite",
+    "index": {
+      "prerequis": [
+        {
+          "feuille": "PL1",
+          "pdf_page": 2
+        },
+        {
+          "feuille": "PL2",
+          "pdf_page": 5
+        },
+        {
+          "feuille": "PL3",
+          "pdf_page": 6
+        },
+        {
+          "feuille": "PL4",
+          "pdf_page": 9
+        }
+      ],
+      "module_1": [
+        {
+          "feuille": "PL1",
+          "pdf_page": 3
+        },
+        {
+          "feuille": "PL2",
+          "pdf_page": 4
+        },
+        {
+          "feuille": "PL3",
+          "pdf_page": 7
+        },
+        {
+          "feuille": "PL4",
+          "pdf_page": 8
+        },
+        {
+          "feuille": "PL5",
+          "pdf_page": 10
+        },
+        {
+          "feuille": "PL6",
+          "pdf_page": 11
+        }
+      ],
+      "module_2": [
+        {
+          "feuille": "PL7",
+          "pdf_page": 12
+        },
+        {
+          "feuille": "PL8",
+          "pdf_page": 13
+        }
+      ],
+      "module_3": [
+        {
+          "feuille": "PL9",
+          "pdf_page": 14
+        }
+      ],
+      "module_4": [
+        {
+          "feuille": "PL10",
+          "pdf_page": 15
+        }
+      ],
+      "module_5": [
+        {
+          "feuille": "PL11",
+          "pdf_page": 16
+        },
+        {
+          "feuille": "PL12",
+          "pdf_page": 17
+        }
+      ],
+      "module_6": [
+        {
+          "feuille": "PL13",
+          "pdf_page": 18
+        }
+      ],
+      "module_7": [
+        {
+          "feuille": "PL14",
+          "pdf_page": 19
+        }
+      ],
+      "module_8": [
+        {
+          "feuille": "PL15",
+          "pdf_page": 20
+        },
+        {
+          "feuille": "PL16",
+          "pdf_page": 21
+        },
+        {
+          "feuille": "PL17",
+          "pdf_page": 22
+        },
+        {
+          "feuille": "PL18",
+          "pdf_page": 23
+        },
+        {
+          "feuille": "PL19",
+          "pdf_page": 24
+        },
+        {
+          "feuille": "PL20",
+          "pdf_page": 25
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,596 @@
+{
+  "id": "m1-466ae4",
+  "meta": {
+    "module": 1,
+    "theme": "Travail",
+    "slogan": "Travailler pour s'épanouir",
+    "texte_titre": "Apprentie comédienne",
+    "texte_type": "lecture",
+    "match_score": 1.0,
+    "projet_ecriture": "Je raconte un événement en rapport avec « le travail »",
+    "outils_langue": {
+      "grammaire": "Reconnaître et utiliser les déterminants, les noms et les pronoms personnels",
+      "conjugaison": "Reconnaître les trois temps : présent, passé composé, futur ; utiliser verbes à l'infinitif et conjugués",
+      "orthographe": "Utiliser l'infinitif après à / de / par / pour / sans"
+    },
+    "objectifs_oraux": [
+      "Informer/s'informer",
+      "Décrire/raconter un événement",
+      "Situer des lieux",
+      "Justifier un choix"
+    ],
+    "source": "manuel_de_lecture_6e_CNIP",
+    "source_file": "examples/p11-raw.txt",
+    "sequence": [
+      "anticipation",
+      "globale",
+      "analytique",
+      "vocabulaire",
+      "synthese"
+    ]
+  },
+  "segments": [
+    {
+      "idx": 1,
+      "fr": "la dernière réplique",
+      "ar": null,
+      "is_heading": true,
+      "words": [
+        {
+          "w": "la"
+        },
+        {
+          "w": "dernière"
+        },
+        {
+          "w": "réplique"
+        }
+      ],
+      "audio": "media/s1.mp3",
+      "audio_slow": "media/s1-slow.mp3"
+    },
+    {
+      "idx": 2,
+      "fr": "la dernière phrase du dialogue",
+      "ar": null,
+      "is_heading": true,
+      "words": [
+        {
+          "w": "la"
+        },
+        {
+          "w": "dernière"
+        },
+        {
+          "w": "phrase"
+        },
+        {
+          "w": "du"
+        },
+        {
+          "w": "dialogue"
+        }
+      ],
+      "audio": "media/s2.mp3",
+      "audio_slow": "media/s2-slow.mp3"
+    },
+    {
+      "idx": 3,
+      "fr": "Apprentie comédienne",
+      "ar": null,
+      "is_heading": true,
+      "words": [
+        {
+          "w": "Apprentie"
+        },
+        {
+          "w": "comédienne"
+        }
+      ],
+      "audio": "media/s3.mp3",
+      "audio_slow": "media/s3-slow.mp3"
+    },
+    {
+      "idx": 4,
+      "fr": "Joséphine vient de lancer la dernière réplique : « Elle est morte.",
+      "ar": null,
+      "is_heading": false,
+      "words": [
+        {
+          "w": "Joséphine"
+        },
+        {
+          "w": "vient"
+        },
+        {
+          "w": "de"
+        },
+        {
+          "w": "lancer"
+        },
+        {
+          "w": "la"
+        },
+        {
+          "w": "dernière"
+        },
+        {
+          "w": "réplique"
+        },
+        {
+          "w": "Elle"
+        },
+        {
+          "w": "est"
+        },
+        {
+          "w": "morte"
+        }
+      ],
+      "audio": "media/s4.mp3",
+      "audio_slow": "media/s4-slow.mp3"
+    },
+    {
+      "idx": 5,
+      "fr": "Adieu ! ».",
+      "ar": null,
+      "is_heading": false,
+      "words": [
+        {
+          "w": "Adieu"
+        }
+      ],
+      "audio": "media/s5.mp3",
+      "audio_slow": "media/s5-slow.mp3"
+    },
+    {
+      "idx": 6,
+      "fr": "Il y a un long silence dans le théâtre.",
+      "ar": null,
+      "is_heading": false,
+      "words": [
+        {
+          "w": "Il"
+        },
+        {
+          "w": "un"
+        },
+        {
+          "w": "long"
+        },
+        {
+          "w": "silence"
+        },
+        {
+          "w": "dans"
+        },
+        {
+          "w": "le"
+        },
+        {
+          "w": "théâtre"
+        }
+      ],
+      "audio": "media/s6.mp3",
+      "audio_slow": "media/s6-slow.mp3"
+    },
+    {
+      "idx": 7,
+      "fr": "La jeune fille reste immobile, toute droite, comme une statue, sur le devant de la scène.",
+      "ar": null,
+      "is_heading": false,
+      "words": [
+        {
+          "w": "La"
+        },
+        {
+          "w": "jeune"
+        },
+        {
+          "w": "fille"
+        },
+        {
+          "w": "reste"
+        },
+        {
+          "w": "immobile"
+        },
+        {
+          "w": "toute"
+        },
+        {
+          "w": "droite"
+        },
+        {
+          "w": "comme"
+        },
+        {
+          "w": "une"
+        },
+        {
+          "w": "statue"
+        },
+        {
+          "w": "sur"
+        },
+        {
+          "w": "le"
+        },
+        {
+          "w": "devant"
+        },
+        {
+          "w": "de"
+        },
+        {
+          "w": "la"
+        },
+        {
+          "w": "scène"
+        }
+      ],
+      "audio": "media/s7.mp3",
+      "audio_slow": "media/s7-slow.mp3"
+    },
+    {
+      "idx": 8,
+      "fr": "Dans sa gorge vibrent encore les mots qu’elle vient de prononcer.",
+      "ar": null,
+      "is_heading": false,
+      "words": [
+        {
+          "w": "Dans"
+        },
+        {
+          "w": "sa"
+        },
+        {
+          "w": "gorge"
+        },
+        {
+          "w": "vibrent"
+        },
+        {
+          "w": "encore"
+        },
+        {
+          "w": "les"
+        },
+        {
+          "w": "mots"
+        },
+        {
+          "w": "qu’elle"
+        },
+        {
+          "w": "vient"
+        },
+        {
+          "w": "de"
+        },
+        {
+          "w": "prononcer"
+        }
+      ],
+      "audio": "media/s8.mp3",
+      "audio_slow": "media/s8-slow.mp3"
+    },
+    {
+      "idx": 9,
+      "fr": "Diplômée de l’école des arts dramatiques, Joséphine apprend le métier de comédienne.",
+      "ar": null,
+      "is_heading": false,
+      "words": [
+        {
+          "w": "Diplômée"
+        },
+        {
+          "w": "de"
+        },
+        {
+          "w": "l’école"
+        },
+        {
+          "w": "des"
+        },
+        {
+          "w": "arts"
+        },
+        {
+          "w": "dramatiques"
+        },
+        {
+          "w": "Joséphine"
+        },
+        {
+          "w": "apprend"
+        },
+        {
+          "w": "le"
+        },
+        {
+          "w": "métier"
+        },
+        {
+          "w": "de"
+        },
+        {
+          "w": "comédienne"
+        }
+      ],
+      "audio": "media/s9.mp3",
+      "audio_slow": "media/s9-slow.mp3"
+    }
+  ],
+  "malette": [
+    {
+      "fr": "derniere",
+      "count": 3,
+      "syllabes": [
+        "der",
+        "niere"
+      ],
+      "ar": null,
+      "read_ar": null,
+      "ipa": null,
+      "image": "media/mot-derniere.png",
+      "audio": "media/mot-derniere.mp3"
+    },
+    {
+      "fr": "replique",
+      "count": 2,
+      "syllabes": [
+        "re",
+        "plique"
+      ],
+      "ar": null,
+      "read_ar": null,
+      "ipa": null,
+      "image": "media/mot-replique.png",
+      "audio": "media/mot-replique.mp3"
+    },
+    {
+      "fr": "dialogue",
+      "count": 1,
+      "syllabes": [
+        "dia",
+        "logue"
+      ],
+      "ar": null,
+      "read_ar": null,
+      "ipa": null,
+      "image": "media/mot-dialogue.png",
+      "audio": "media/mot-dialogue.mp3"
+    },
+    {
+      "fr": "apprentie",
+      "count": 1,
+      "syllabes": [
+        "ap",
+        "pren",
+        "tie"
+      ],
+      "ar": null,
+      "read_ar": null,
+      "ipa": null,
+      "image": "media/mot-apprentie.png",
+      "audio": "media/mot-apprentie.mp3"
+    },
+    {
+      "fr": "comedienne",
+      "count": 2,
+      "syllabes": [
+        "co",
+        "me",
+        "dienne"
+      ],
+      "ar": null,
+      "read_ar": null,
+      "ipa": null,
+      "image": "media/mot-comedienne.png",
+      "audio": "media/mot-comedienne.mp3"
+    },
+    {
+      "fr": "josephine",
+      "count": 2,
+      "syllabes": [
+        "jo",
+        "se",
+        "phine"
+      ],
+      "ar": null,
+      "read_ar": null,
+      "ipa": null,
+      "image": "media/mot-josephine.png",
+      "audio": "media/mot-josephine.mp3"
+    },
+    {
+      "fr": "vient",
+      "count": 2,
+      "syllabes": [
+        "vient"
+      ],
+      "ar": null,
+      "read_ar": null,
+      "ipa": null,
+      "image": "media/mot-vient.png",
+      "audio": "media/mot-vient.mp3"
+    },
+    {
+      "fr": "lancer",
+      "count": 1,
+      "syllabes": [
+        "lan",
+        "cer"
+      ],
+      "ar": null,
+      "read_ar": null,
+      "ipa": null,
+      "image": "media/mot-lancer.png",
+      "audio": "media/mot-lancer.mp3"
+    },
+    {
+      "fr": "morte",
+      "count": 1,
+      "syllabes": [
+        "morte"
+      ],
+      "ar": null,
+      "read_ar": null,
+      "ipa": null,
+      "image": "media/mot-morte.png",
+      "audio": "media/mot-morte.mp3"
+    },
+    {
+      "fr": "adieu",
+      "count": 1,
+      "syllabes": [
+        "adieu"
+      ],
+      "ar": null,
+      "read_ar": null,
+      "ipa": null,
+      "image": "media/mot-adieu.png",
+      "audio": "media/mot-adieu.mp3"
+    },
+    {
+      "fr": "silence",
+      "count": 1,
+      "syllabes": [
+        "si",
+        "lence"
+      ],
+      "ar": null,
+      "read_ar": null,
+      "ipa": null,
+      "image": "media/mot-silence.png",
+      "audio": "media/mot-silence.mp3"
+    },
+    {
+      "fr": "theatre",
+      "count": 1,
+      "syllabes": [
+        "theatre"
+      ],
+      "ar": null,
+      "read_ar": null,
+      "ipa": null,
+      "image": "media/mot-theatre.png",
+      "audio": "media/mot-theatre.mp3"
+    }
+  ],
+  "quiz": [
+    {
+      "phase": "globale",
+      "type": "vrai-faux",
+      "prompt_ar": "هل تدور أحداث النص في…؟",
+      "answer": null
+    },
+    {
+      "phase": "globale",
+      "type": "image-choice",
+      "prompt_ar": "أي صورة تناسب النص؟"
+    },
+    {
+      "phase": "analytique",
+      "type": "qcm",
+      "prompt_ar": "من الشخصية الرئيسية وماذا تريد؟"
+    },
+    {
+      "phase": "analytique",
+      "type": "order",
+      "prompt_ar": "رتّب الأحداث كما وردت"
+    },
+    {
+      "phase": "vocabulaire",
+      "type": "match",
+      "prompt_ar": "صِل الكلمة بمعناها"
+    },
+    {
+      "phase": "depass",
+      "type": "oral",
+      "prompt_ar": "لو كنت مكان البطل، ماذا تفعل؟ (3 جمل)"
+    }
+  ],
+  "phonetique": [
+    {
+      "pair": "[y]/[u]",
+      "exemples": [
+        "tu",
+        "tout"
+      ],
+      "ar": "الضمة الفرنسية مقابل الضمة العربية"
+    },
+    {
+      "pair": "[y]/[i]",
+      "exemples": [
+        "lit",
+        "lue"
+      ],
+      "ar": "الضمة الفرنسية مقابل الكسرة"
+    },
+    {
+      "pair": "[p]/[b]",
+      "exemples": [
+        "poule",
+        "boule"
+      ],
+      "ar": "p/b (لا وجود لـ p في العربية)"
+    },
+    {
+      "pair": "[f]/[v]",
+      "exemples": [
+        "film",
+        "vil"
+      ],
+      "ar": "f/v"
+    }
+  ],
+  "retenir": {
+    "mots": [
+      "derniere",
+      "replique",
+      "dialogue",
+      "apprentie",
+      "comedienne",
+      "josephine",
+      "vient",
+      "lancer"
+    ],
+    "structures": [],
+    "projet": "Je raconte un événement en rapport avec « le travail »"
+  },
+  "rights": {
+    "mode": "prive_classe",
+    "include_raw_text": true,
+    "note": "© CNIP — usage pédagogique privé ; version publique = métadonnées + contenus dérivés seulement"
+  },
+  "qc": {
+    "issues": [
+      "segment 1: traduction arabe manquante",
+      "segment 2: traduction arabe manquante",
+      "segment 3: traduction arabe manquante",
+      "segment 4: traduction arabe manquante",
+      "segment 5: traduction arabe manquante",
+      "segment 6: traduction arabe manquante",
+      "segment 7: traduction arabe manquante",
+      "segment 8: traduction arabe manquante",
+      "segment 9: traduction arabe manquante",
+      "mot «derniere» sans traduction",
+      "mot «replique» sans traduction",
+      "mot «dialogue» sans traduction",
+      "mot «apprentie» sans traduction",
+      "mot «comedienne» sans traduction",
+      "mot «josephine» sans traduction",
+      "mot «vient» sans traduction",
+      "mot «lancer» sans traduction",
+      "mot «morte» sans traduction",
+      "mot «adieu» sans traduction",
+      "mot «silence» sans traduction",
+      "mot «theatre» sans traduction"
+    ],
+    "ocr_chars": 509,
+    "phrases": 9,
+    "nouveaute": 0.35
+  }
+}

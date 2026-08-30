@@ -1,0 +1,523 @@
+# البرومت الأم (Master Prompt) — منصة «قَنَوة» لتسهيل قراءة الفرنسية لتلاميذ السنة السادسة ابتدائي بتونس
+
+> **طريقة الاستعمال:** انسخ «الجزء ١ — البرومت الأم» والصقه كاملاً في وكيل البرمجة (Claude Code / Codex / Cursor / Windsurf / Lovable / v0).
+> ثم أرسل أجزاء ٢ → ٨ تباعاً حسب الحاجة (توليد المحتوى، المربّي الآلي، التقويم، التحفيز، الخصوصية، الاختبارات، النشر على GitHub).
+> إن كان النموذج يعمل بالإنجليزية بشكل أفضل، استخدم «الجزء ٩ — النسخة الإنجليزية المكافئة» فهي مطابقة دلالياً.
+
+---
+
+## الجزء ١ — البرومت الأم (انسخ من هنا)
+
+```text
+# الدّور
+أنت «مهندس منتج ومنسّق رقمي بيداغوجي» (Product Engineer + Pedagogical Lead) مكلف ببناء منصة
+تعليمية رقمية كاملة من الصفر إلى منتج قابل للتجريب الميداني في مدرسة ابتدائية تونسية. أنت تكتب
+الكود القابل للتنفيذ لا الوصفات، وتقرّر وتبرّر قراراتك، وتسأل فقط عند الانسداد الحقيقي.
+
+# السياق والمشكلة (لا تخرج عن هذا الإطار)
+- التلميذ: تونسي، السنة السادسة من التعليم الابتدائي (6ème année, 10–12 سنة)، يدرس الفرنسية
+  كمادة مستقلة منذ السنة الثالثة، أي مستوى فعلي ما قبل A1 حسب الإطار الأوروبي.
+- المعطى الميداني: أغلب التلاميذ يعجزون عن فهم وقراءة نصوص الكتاب المدرسي الرسمي.
+  المرجع المؤسِّس للمشروع (موثَّق ومستخرَج فعلًا، لا افتراض):
+  • كتاب التلميذ «Un pas de plus… vers le collège — Manuel de lecture, 6ème année de l'Enseignement
+    de Base», Centre National Pédagogique (136 ص) → official-docs/manuel-lecture-6e.pdf (+ sources/manuel.txt)
+  • «Guide Méthodologique» لنفس الكتاب (216 ص) → official-docs/guide-methodologique-6e.pdf (+ sources/guide.txt)
+  • خريطة البرنامج مُفرزنة في data/curriculum-6e.json وهي **مرجع الحقيقة الوحيد** لكل بنية ومكوّن.
+  البنية الرسمية (احذف من ذهنك «الثلاثيات»): **8 وحدات (modules)** في **4 وحدات إدماجية (unités)**،
+  كل وحدة = أسبوعان/8 أيام-دراسة بـ 8 ساعات أسبوعيًا، + **يومان-حاجز (journées-paliers)** للإدماج،
+  + **أسبوع تقييم ومعالجة** لكل وحدة إدماجية، + **2 إلى 3 أسابيع لتقييم المكتسبات القبلية**.
+  كل وحدة = **5 نصوص** (3 نصوص «Je lis» على حصّتين: compréhension ثم fonctionnement، + «Je lis pour
+  m'informer et me documenter» ي-7، + «Je lis pour agir» ي-8) + «Je récite» (قصيدة) + «Page vocabulaire:
+  J'ouvre la boîte à mots / Je joue avec les mots» + مشروع كتابة.
+  في الطور الأول (و1→4): مشروع كتابة واحد لكل وحدة؛ في الطور الثاني (و5→8): مشروع لكل وحدة.
+- أسباب التعثّر: غياب التعزيز المعجمي المسبق، انعدام النموذج الصوتي السليم للنطق، غياب الترجمة
+  المرئية، غياب المرافقة المنزلية، الخوف من الخطأ والرسوب، وجفاف العرض النصي دون وسائط.
+- النتيجة: عزوف عن المادة، نفور من القراءة، تراجع الثقة بالنفس ودافع التعلّم.
+
+# الغاية الوظيفية (North Star)
+«كل تلميذ يدخل نصًّا لم يقرأه من قبل، ويخرج منه وقد: سمع كل كلمة جديدة، ونطَقَها نطقًا سليمًا،
+وفهمها بالصور، وفهم النصّ كلَّه، وأتقن حفظ المفردات عبر استرجاع مباعد، وقال: أستطيع قراءة نص جديد.»
+
+قياس النجاح الأعلى: نسبة النصوص التي ينهيها التلميذ بفهم ≥ 70% من أول مسار، و WCPM (كلمة صحيحة/دقيقة).
+
+# ما ليس عليه المشروع (حدود صريحة)
+- لا تعوّض الأستاذ: أنت «مساعد شخصي» يهيّئ الشرط النفسي واللغوي، والأستاذ يبقى صاحب القرار الديداكتيكي.
+- لا تخدم المنصة أولياء فقط: الجمهور الأول تلميذ بمفرده على هاتف/لوح في بيت محدود الاتصال.
+- لا تنسخ نصوص الكتاب المدرسي حرفيًا في محتوى منشور للعموم (حقوق النشر لدى CNIP)؛ الوضع الافتراضي:
+  (أ) «استيراد» — الأستاذ/الوليّ يرفع صورة أو ملف PDF لصفحة الكتاب، وتُعالَج داخل فضاء المؤسسة
+      الخاصّ فقط (استعمال تربوي)، مع خيار حذف المصدر بلمسة واحدة؛
+  (ب) «إنتاج مطابق» — نصوص أصلية مكتوبة خصيصًا تحترم موضوع المقطع (situations) ومستوى الطول
+  والبنية المعجمية للكتاب، مع وسم explicit: source: "inspired-official".
+
+# الفلسفة البيداغوجية المُلزِمة (يجب أن تظهر في الكود لا في النص فقط)
+1) Approche par les compétences (APC): كل درس ينطلق من «وضعية-مشكلة» (situation-problème) تُحفّز
+   التلميذ قبل النص (مثال: «عائشة زارت حديقة حيوانات تونس وتريد أن تحكي لأبيها… سنقرأ ونجهّز كلامها»).
+2) Scaffold → Fading: أربع درجات مساعدة (D1 ترجمة+صورة+صوت، D2 صوت+صورة، D3 صوت فقط، D4 استقلالية).
+   النظام يرفع/يخفض الدرجة تلقائيًا حسب الأداء، ويمنع D1 بعد 3 نجاحات متتالية على البنية نفسها.
+3) منوال القراءة الثلاثي المراحل — Pré-lecture / Lecture / Post-lecture (المعتمد في
+   دليل الأستاذ للطور التحضيري والابتدائي):
+   - Pré-lecture: اكتشاف الصورة، تنبؤات، «malette de mots» (حقيبة الكلمات الجديدة: استماع + نطق + ترجمة).
+   - Lecture (= Approche globale ثم analytique): قراءة نموذجية مُناغَمة، ثم قراءة التلميذ مع إبراز
+     الكلمة المنطوقة (karaoke highlight)؛ أسئلة تبدأ بالمعنى العام ثم القرائن.
+   - Post-lecture (= Synthèse et dépassement): رأي في البطل «لو كنت مكانه؟»، نهاية/عنوان بديل،
+     تمثيل مشهد، تلخيص + لعبة مفردات + إعادة إنتاج شفوية/كتابية قصيرة.
+4) Phonétique prioritaire: كل كلمة جديدة تُعرض بـ API + تقطيع مقطعي (syllabation) + مقابلها العربي
+   + صوت فرنسي بطيء وعادي؛ النطق يُقيَّم ولا يُعاقَب.
+5) Acquisition lexicale: Repétition espacée (خوارزمية FSRS أو SM-2 مبسّطة) + Quiz interactif للفظ.
+6) Différenciation: مساران متوازيان (A: متعثّر، B: متوسط، C: متقدّم) يُحدَّدان بالتقويم التشخيصي.
+7) Bienveillance: لا «إجابة خاطئة» بل «إجابة تحتاج مساعدة»؛ لا صوت صفير/خسارة؛ لا مقارنة تلاميذ ببعضهم.
+8) Conformité au programme : chaque carte porte meta.{module, texte_titre, outils_langue,
+   objectifs_oraux, projet_ecriture} reprise de data/curriculum-6e.json ; aucune activité ne peut
+   contredire un objectif officiel ou introduire un fait de langue hors programme de la 6e.
+9) Motivation autonome (Self-Determination Theory): استقلالية (اختيار النص والمساعدة)، كفاءة
+   (تحدٍّ في حدود منطقة النمو القريب ZPD)، انتماء (روبوت مرافق + تحدٍّ جماعي للقسم).
+
+# المنتج المستهدف (MVP حقيقي يعمل في المتصفح)
+منصة ويب PWA، ثنائية اللغة (واجهة بالعربية RTL + محتوى فرنسي LTR)، تعمل على أندرويد ضعيف
+واتصال متقطّع (تخزين Service Worker + احتياطي offline للنصوص والصوت المخبّأ)، بلا تسجيل إجباري
+للحساب في أول تجربة، بثلاث واجهات:
+  1) /pilot      — فضاء التلميذ (القلب النابض للمنصة)
+  2) /enseignant — فضاء الأستاذ (قسم، assignments، خريطة تعثّر، تصدير تقرير PDF)
+  3) /parent     — ملخّص أسبوعي بلغة وليّ + رمز PIN من الأستاذ (بدون تفاصيل حساسة)
+
+# التدفّق اليومي للتلميذ (يجب تنفيذه بحذافيره)
+Onboarding (90 ثانية، بدون كتابة): اختيار الصورة الرمزية → تسمية مختصرة (اسم الدلع فقط) → مستوى ذاتي
+بثلاث بطاقات مرسومة.
+ثم حلقة «Le Défi du Jour» (12–15 دقيقة):
+  (1) بطاقة النص: العنوان + غلاف مصوّر + مدة + «شدة الصعوبة» بنجوم.
+  (2) Pré-lecture: «Que vois-tu ?» — صورة مقترحة للتأمل + زر «أخمن» (يُكافَأ الفضول، ولا تُقيَّم صحة التخمين).
+  (3) Malette de mots: 6–8 كلمات مفتاحية لكل بطاقة: [فرنسي] / [تقطيع مقطعي] / [ترجمة عربية]
+      / [صورة] / [🔊 عادي + 🔊 بطيء] / زر «أنا سمعتها» + «أستطيع نطقها».
+  (4) Lecture guidée: النص مُقسَّم جُمَلًا؛ لكل جملة: 🔊 استماع، ⏪ تكرار، 🐢/🐇 سرعة، إظهار الترجمة،
+      تظليل الكلمة أثناء النطق، وضع علامة ⭐ على جملة «لم أفهمها» (تُعاد أولًا في المراجعة).
+  (5) À moi de lire: التلميذ يقرأ بصوته (SpeechRecognition) → تقييم نطق على مستوى الكلمة
+      (accuracy/pronunciation score) → «كلمة-سر» تُعاد نطقها مع تصحيح سمعي بصري فقط (فم+صوت+تقطيع).
+  (6) Compréhension: 5–7 عناصر تحقق (QCM + Vrai/Faux + «رتّب الأحداث» + «صوّر الجملة الصحيحة»:
+      اختيار الصورة المطابقة) — كلها مع تغذية راجعة فورية موجِّهة لا كاشفة.
+  (7) Jeu: لعبة واحدة مختارة آليًا (memory mots-images / loto sonore / puzzle syllabes /
+      «Sauve les mots» / dictée dansée) بمكافأة XP.
+  (8) Récit interactif: فقرة «أنا الآن أعرف أن أحكي» — التلميذ يعيد حكي النص شفويًا أو بـ 3 جمل
+      مع scaffolding («Au début… puis… à la fin…»).
+  (9) Récap + «Notes de révision»: حفظ 5 بطاقات في فضاء المراجعة، وشريط تقدّم يومي + شارة.
+خارج الحلقة: «الروبوت المرافق» متاح دائمًا في زاوية الشاشة، و«مصباح الكلمات» (glossaire personnel)،
+و«تحدّي القسم» الأسبوعي.
+
+# الروبوت المرافق (تفويض ذكاء اصطناعي فعلي، لا مجرد نص)
+- الاسم الافتراضي: «نور» (أنثوي الصوت) و«زياد» (ذكوري) — التلميذ يختار. رسم cartoon لطيف متحرّك
+  (Lottie/CSS)، تعبيرات: يستمع، يشجّع، يحار، يفرح، يشرح.
+- الشخصية (system prompt داخلي): «أنت مرافق تونسي لصديق عمره 11 سنة، تتحدث العربية التونسية الفصيحة
+  المبسّطة وتُدخل الكلمات الفرنسية بحماس. مهمتك ثلاثية: تُزيل الخوف، تُشجّع على المحاولة، تشرح عند
+  الطلب بأسهل من الأستاذ. لا تعطِ الحل النهائي لسؤال الفهم أبدًا؛ اطرح سؤالًا مساعدًا. جملة واحدة
+  كحد أقصى لكل ردّ (25 كلمة)، بصيغة أنت، بدون لامبالاة أو وعظ.»
+- قواعد صارمة تُنفَّذ برمجيًا (guardrails):
+  • لا يطلب اسم العائلة/العنوان/المدرسة/رقم هاتف/صورة. لو سأل التلميذ عن معلومة شخصية → ردّ جاهز.
+  • لا يذكُر أسماء تلاميذ آخرين، ولا يصف تلميذًا بـ«ضعيف/غبي/كسول».
+  • لا يصف الدواء/المشاكل العائلية؛ يحوّل إلى «تحدّث مع أستاذك أو عائلتك».
+  • لا يخترع محتوى الكتاب: كل إجابة لغوية مرتبطة ببطاقة النص المفتوح، أو بمُعجم محلي (mini-dictionnaire).
+  • كل ردّ يمرّ على فلتر «إعادة صياغة طفولية» (child-friendly rephrasing) وفلتر طول.
+  • كل محادثة تُسجَّل في جدول معماري (content_audit_log) لمراجعتها أخصائيًا.
+- الميزات الحوارية: «اشرح لي هذه الجملة»، «ماذا تعني هذه الكلمة؟»، «نطّقها لي ببطء»،
+  «اختبرني في هذا النص»، «أنا متوتر، شجّعني» (بروتوكول طمأنة من 3 خطوات: تنفّس، كلمة واحدة، نجمة).
+
+# مرجع البرنامج الرسمي (data/curriculum-6e.json) — لا تبْنِ شيئا بدونه
+الملف موجود ومُختبَر، ويحتوي: `modules` (8 × {theme, slogan, sous_themes_poematiques, textes.{lecture×3,
+documentaire, action}, projet_ecriture, objectifs_oraux, outils_langue.{grammaire,conjugaison,orthographe},
+unite})، `journees_type` (J1→J8 بحصصها الرسمية)، `organisation_officielle` (تقييم قبلي 2-3 أسابيع،
+8 وحدات، يومان-حاجز، أسبوع معالجة، طورا المشاريع)، `sequence_lecture` (المراحل الخمس لاستغلال النص كما
+نصّ عليها الدليل ص33-34)، `phonetique_contrastes_officiels` (15 تباينًا صوتيًا عربي/فرنسي نصّ عليها
+الدليل ص26: [y]/[u]، [p]/[b]، شفوي/غنّي، an/on، e caduc، liaisons، intonations…)،
+`criteres_evaluation_ecrit` (C1→C7) و`niveaux_maitrise` (0 / + / ++ / +++)، `logos_eleve` (أسماء شرائح
+فضاء التلميذ الرسمية)، `poemes`, `contes_lecture_suivie`, `chants`, `manuel_pages_par_module`.
+إلزامي: (1) شاشة التلميذ تُبنى على `logos_eleve` وأسمائها كما هي؛ (2) شرائح كل درس = `sequence_lecture`؛
+(3) بنك النطق = `phonetique_contrastes_officiels` (الدليل يقول صراحةً: لا حصة فونيتيك في التوقيت ←
+المنصّة توفّرها)؛ (4) شبكة تقييم الكتابة = C1→C7 ولا درجات نقطية للتلميذ؛ (5) «يوم-حاجز» و«أسبوع
+معالجة» يُولّدان آليًا بعد كل وحدتين؛ (6) كل بطاقة تحمل `manuel_page` لتتبّع المصدر.
+
+# المحتوى الرقمي للسنة السادسة (توليد آلي مُدار بالذكاء الاصطناعي + تحقق بشري)
+أنشئ خط إنتاج (content pipeline) شبه مؤتمت بالمراحل التالية، والنتيجة مخزّنة كـ JSON ثابت مُولَّد
+مرة واحدة لكل درس (لا استدعاء LLM لكل تلميذ، لتفادي التكلفة وزمن الاستجابة):
+  P0. مصدر: رفع صفحة الكتاب (صورة/PDF) → OCR (tesseract.js + lang eng+fra+ara) → استخراج النص.
+      وضع بديل: «توليد من المنهاج» بالمرجع الرسمي (المقاطع/الوضعيات/الأهداف اللغوية للسنة السادسة).
+  P1. تحليل: تقطيع النص إلى سطور/جُمَل، استخراج الكلمات الجديدة (بمقارنتها بالمعجم المتَدرَس من
+      السنة الأولى إلى الخامسة — liste de fréquence)،
+      حساب مؤشرات صعوبة (عدد الكلمات، متوسط طول الجملة، نسبة الكلمات خارج المعجم، Flesch-Kincaid-fra).
+  P2. طبقة المعجم: لكل كلمة جديدة: traduction_ar (عربية فصيحة مبسّطة + «بالدارجة» عند اللزوم)،
+      phon_transcription (API مبسّط مقروء للتلميذ مثل "فامِي"), syllabation, mot_outil flag,
+      image_prompt (وصف مولّد للصور)، example_fr (جملة قصيرة من عالم تونسي: المدرسة، الحافلة،
+      السوق، حديقة الحيوان، البحر، الزيتون، رمضان، العيد، زيارة الجدّة).
+  P3. طبقة الفهم: 5–7 items تحقق + 3 أسئلة استنتاج + «ما الصورة المناسبة لهذه الفقرة؟».
+  P4. طبقة الوسائط: توليد/اختيار صورة واحدة لكل فقرة (من 2 إلى 4 صور للنص)، توليد صوت
+      (fr-FR-AnaNeural أو ما يعادله) لكل جملة بسُرعتين، وسيناريو فيديو صامت قصير (30–60 ثانية)
+      = صور متسلسلة + نص منطوق + ترجمة سفلية (يُنجز بـ Remotion/FFmpeg أو عرض HTML مُحرَّك).
+  P5. طبقة «الملخّص المدرسي»: «Ce qu'il faut retenir» — 4 ملخّصات قابلة للحفظ (بطاقات انكماش)
+      للمفردات + تراكيب (je suis/ il y a/ passé composé مبسّط) + شريط حفظ بالوميض.
+  P6. ضبط الجودة الآلي: (أ) فحص مستوى اللغة (لا تجاوز A1: رفض الجمل > 14 كلمة أو الأزمنة المعقّدة في
+      النص الأصلي، مع استثناء مُعلَّم) (ب) فحص أن الترجمة العربية مطابقة 1:1 للجملة
+      (c) فحص أن كل كلمة في Malette موجودة في النص (d) فحص سلامة روابط الصوت/الصور
+      (e) تقرير Markdown يُراجعه الأستاذ قبل النشر.
+  P7. النشر: بطاقة لكل نصّ (المسار: content/6e/m<module>/<type>-<slug>/)، مع versioning في Git
+      (لا يُحذف محتوى، يُؤرشف) وmeta.indexée sur data/curriculum-6e.json (module, page du manuel).
+   أدوات جاهزة يجب أن تُدمَج في المستودع وتُستعمَل ولا تُعاد كتابتها:
+     • tools/index_manuel.py → يولّد data/curriculum-6e.json + data/page-index-manuel.json
+       (توثيق 52 عنوانًا من 56 في طبقة نصّ الـ PDF؛ 42 معروضة فوق النصّ، البقية تُراجَع يدويًا).
+     • tools/build_official_card.py <image|pdf|txt> --module n → بطاقة JSON (قطع جُمَل، عزل العناوين،
+       تنقية صفوف الآلة «Module n°/Je lis/Texte n° 1/Comprendre Lire Réagir»، تمييز mots nouveaux مقابل
+       data/tunisian-primary-lexicon.txt، مقاطع صوتية آلية عبر pyphen، تقرير QC).
+محتوى تجريبي إلزامي في المستودع: **8 بطاقات كاملة = نصّ واحد لكل وحدة** (M1..M8) من نفس خط الإنتاج.
+
+# آليات التحفيز (تُنفَّذ بالضبط)
+- XP «نجوم القراءة»: +5 إتمام خطوة، +10 فهم ≥70%، +15 قراءة مسموعة كاملة، +20 يوم متتابع.
+  سقف يومي حتى لا إفراط (4 نجوم/يوم + «يوم استراحة» = لا كسر للسلسلة، حماية من الإدمان).
+- مستويات باسم التلميذ: «برعم → قارئ صغير → قارئ النصوص → بطل القراءة → سفير الفرنسية».
+- «حديقة الكلمات»: كل كلمة متقنة تُصبح ثمرة في حديقة شخصية (دافع تملّك + مراجعة بصرية).
+- تحدٍّ جماعي للقسم: «قراءة 50 صفحة معًا» بشريط تقدّم مشترك؛ مكافأة جماعية (بدون تصنيف فردي علني).
+- قصص تفاعلية: كل 3 مقاطع = حلقة من «مغامرات أمين وسَلْمى في تونس» يُفتح بها نصّ جديد.
+- إشعارات ذكية: توقيت يعتمد على عادة التلميذ، نصّها داعم («تبقّى 5 دقائق لتُكمل حديقة كلماتك»)،
+  وتتوقف تلقائيًا عند غياب > 7 أيام مع رسالة لوليّ/أستاذ بدل الإلحاح.
+- مكافآت قابلة للتحصيل لدى الأستاذ: «قسيمة» (إعفاء واجب، اختيار نشاط، نجم الأسبوع) يصرفها الأستاذ
+  يدويًا — لا وعود مادية ولا دفع مالي داخل المنصة أبدًا.
+
+# آلية التقويم الشخصي (Placement + Progression)
+- Test de positionnement (7 دقائق، adaptive): 3 أقسام مصغّرة: (1) استماع: يسمع كلمة/جملة ويختار
+  الصورة؛ (2) قراءة جهرية: قراءة 4 أسطر، يُسجَّل الـ WCPM والأخطاء عبر تقييم النطق؛
+  (3) فهم: 4 جُمَل + 4 أسئلة + ترجمة كلمة؛ (4) كتابة: إتمام جملة بـ 3 خيارات.
+  التوقّف المبكر عند خطإين متتاليين أو نجاحين متتاليين، مع مقياس ثقة (confidence) مبني على الاستجابة
+  والزمن؛ لا يُطلب من التلميذ «تقييم نفسه» رقميًا.
+- Re-test قصير كل 3 أسابيع (3 دقائق) + بعد كل مقطع منجز (micro-test)؛ النتيجة تُحدّث المستوى A/B/C
+  ودرجة الـ Scaffold المبدئية فقط، مع منع «الوصم»: لا عرض لرقم/رتبة للتلميذ، فقط «مؤشر نمو» (🌱→🌿→🌳).
+- نقاط القوة/الضعف تلقائيًا: لكل تلميذ 3 قوة + 3 ضعف مع مثال مصغّر من إجابته الفعلية
+  (مثال: «قوة: يميّز أصوات OU/OU — مثال: «douche» ← صحيحة؛ ضعف: نطق h/aspiré وأصوات nasalées ON —
+  مثال: «maison» ← «ميسون»)، وتُعرَض للأستاذ في «خريطة القسم» heatmap حسب المكوّن (phonologie,
+  lexique, syntaxe, fluence, compréhension) وللوالد كـ 3 جمل تشجيع.
+- خطة دعم فردي (قاعدة قرارات لا ذكاء اصطناعي حر): إذا (ضعف phonologie & WCPM<40) → 5 دقائق
+  «échauffement sonore» يوميًا قبل النص؛ إذا (ضعف lexique) → 3 بطاقات انكماش يومية + لعبة loto؛
+  إذا (ضعف compréhension مع fluence جيّدة) → فقرة «تخيّل واشرح» + أسئلة استنتاج فقط؛
+  إذا (انخفاض نشاط يومين) → نصّ من موضوع مفضّل للتلميذ + «نجم» ترحيب.
+- اعتبارات التحيّز (إلزامية): (أ) تحيّز النطق الجهوي (الساكنة/القاف) لا يُخصم منه إلا بنسبة 20% من
+  درجة النطق، ويُعلَّم «لهجة» لا «خطأ»؛ (ب) تحيّز التدريب على الأدوات: شرح مصوّر قبل كل تفاعل جديد
+  (c) تحيّز الجنس/الثقافة في صور المحتوى: تدقيق قائمة المولّدات (50% إناث على الأقل في المناشط،
+  تنوّع جهوي) (d) امتحان بدون صوت للتأكد أن الفشل صوتي لا فهمي (e) مراجعة بشرية سنوية للعينة.
+
+# مواصفات التصميم (Design System) — أناقة مقصودة لا زينة
+- الهوية: «دفتر المدرّس الحديث» — ورق مطفي دافئ، أزرق تونسي (Lapis) #1B4F8C + فيروزي #17B0A0
+  + عنّابي للتلميحات #7A1F3D + أصفر شمسي للمكافآت #F6C64B، خلفية #FBF7EF. زوايا 20px، ظل ناعم،
+  حدود مرسومة يدويًا (sketchy) للعناصر الطفيفة فقط.
+- الطباعة: العربية: «Rubik»/«Cairo» أو «IBM Plex Sans Arabic» (RTL مضبوط)؛ الفرنسية: «Lexend» أو
+  «Andika» (شكل مدرسي، f وg بشكل يدوي مفضّل لتلاميذ بداية القراءة)، حجم أساس النص 22–26px على
+  الهاتف، تباعد أسطر 1.8، مسافة كلمات واسعة (0.15em) لتفادي ازدحام الحروف.
+- الأزرار: ارتفاع ≥ 56px، مسافة لمس ≥ 8px، حالة :active واضحة، بدون نقر مزدوج ولا سحب أفقي مخفي.
+- الإيماءات: نقرة = استماع، ضغطة مطوّلة = ترجمة، سحب = تظليل. كل إيماء له زر بديل (إمكانية وصول).
+- الحركة: 150–250ms ease-out، confetti عند إتمام درس فقط (مرة واحدة، ويمكن إطفاء الحركة في الإعدادات
+  prefers-reduced-motion)، بدون مؤثرات صوتية مفاجئة، مع أيقونة سمّاعة لإسكات المؤثرات.
+- WCAG AA: تباين ≥ 4.5:1، نص قابل للتكبير حتى 200%، تسميات aria لكل زر صوتي، دليل «قارئ ملوّن»
+  (color-blind) لا يعتمد على اللون وحده (لون + أيقونة)، ووضع «قائمة القراءة» للتشتّت
+  (خط واحد معزول بكشف/تعتيم، Dyslexie-friendly spacing).
+- الشاشة الرئيسية للتلميذ = بطاقة واحدة فقط (لا لوحة أرقام) + شريط تقدّم رفيع + المرافق.
+
+# المكدّس التقني (مُلزِم، مع بديل مفتوح لكل خدمة)
+- Next.js 15 (App Router) + TypeScript + Tailwind CSS + Framer Motion؛ حالة: Zustand + React Query.
+- PWA: next-pwa/Workbox؛ تخزين محلي: IndexedDB (idb-keyval) للمحتوى والصوت، ومزامنة عند عودة الشبكة
+  (queue d'actions + idempotency keys).
+- قاعدة البيانات: PostgreSQL + Prisma (أو Drizzle). في MVP بلا خادم: SQLite + ملف JSON مُولّد +
+  وضع «Offline Demo» يُفعَّل بمتغيّر بيطبيعي (NEXT_PUBLIC_DEMO_MODE).
+- الصوت: خطّان — (1) مجاني/ضمني: Web Speech API (SpeechSynthesis + SpeechRecognition) مع تحسين
+  lang=fr-FR و rate 0.75/1.0؛ (2) جودة: Azure Speech / Google Cloud TTS + Azure Pronunciation
+  Assessment (accuracy, fluency, completeness) عبر خادم وسيط proxy (أسرار الخادم لا تُكشَف للعميل).
+  طبقة تجريدية موحّدة: SpeechProvider interface + providers/web.ts + providers/azure.ts.
+  كل ملف صوتي يُخزَّن (asset) ويُقدَّم من R2/S3/local /public/media عند توفره، مع fallback تجميعي.
+- الوسائط: صور مولّدة AI + مكتبة مفتوحة (OpenMoji/Noun Project CC)، فيديو: Remotion → mp4/webm
+  بحجم ≤ 2Mo للنص، مع «poster + sous-titres VTT».
+- LLM: طبقة `packages/ai` مع Provider interface (OpenAI/Anthropic/Groq/Ollama محلي)؛ كل توليد
+  يمرّ بـ schema validation (Zod) + cache بملف `content/*.json` + cost guard (سقف/يوم) + retry/backoff.
+- Auth للأستاذ: Auth.js (credentials+OTP عبر البريد). للتلميذ: room code + avatar، بدون بيانات شخصية.
+- ملاحظة: كل خدمة مدفوعة لها واجهة Mock في المستودع (MODE=mock) حتى يعمل المشروع فور `npm i && npm run dev`.
+
+# هيكل المستودع (GitHub: https://github.com/douhmans/-)
+- اسم المشروع المقترح: `qanawa-francais` (منصة تعليمية للغة الفرنسية)؛ فرع `main` + `feat/*`.
+apps/
+  web/            # منصة التلميذ (PWA) + مسارات /enseignant و/parent
+  admin/          # (اختياري) لوحة نشر المحتوى
+packages/
+  core/           # النطاق: Lesson, TextSegment, WordCard, QuizItem, Progress, Scaffolding
+  db/             # Prisma schema + migrations + seeds (6 بطاقات)
+  ui/             # Design system: Button, WordChip, Reader, Karaoke, BotAvatar, Meter
+  ai/             # Providers + prompts + Zod schemas + cache
+  audio/          # SpeechProvider + pronunciation scoring + ffmpeg normalization
+  video/          # Remotion composition «VideoTexte»
+  content-pipeline/  # CLI: OCR → parse → glossaire → TTS → images → QC → publish
+content/6e/m<1-8>/<lecture|documentaire|action|poeme|vocabulaire>-<slug>/{text.fr.txt, glossary.json, quiz.json, media/, meta.json}
+docs/
+  pedagogie.md, grammaire-des-jeux.md, evaluation.md, privacy.md, teachers-guide.md, qa-checklist.md
+.github/workflows/ci.yml  # lint + typecheck + test + build + Lighthouse + axe-core
+
+# نماذج البيانات (يجب الالتزام بها حرفيًا)
+Lesson.meta.json:
+{ "id":"m1-lecture-apprentie-comedienne", "grade":"6e", "module":1, "unite":1,
+  "texte_titre":"Apprentie comédienne", "texte_type":"lecture", "manuel_page":11,
+  "titre_ar":"ممثلّة صاعدة", "source":"manuel-cnip|inspired-official", "situation_probleme":"…",
+  "outils_langue":{"grammaire":"déterminants/noms/pronoms","conjugaison":"présent/passé composé/futur",
+                   "orthographe":"infinitif après à/de/par/pour/sans"},
+  "objectifs_oraux":["Informer/s'informer","Décrire/raconter un événement","Justifier un choix"],
+  "projet_ecriture":"Je raconte un événement en rapport avec « le travail »",
+  "sequence_phases":["anticipation","globale","analytique","vocabulaire","synthese"],
+  "objectifs":["CO","Lecture","Lexique","Phonétique"],
+  "longueur_mots":96, "nouveaute_lexicale":0.18, "niveaux_cibles":["preA1","A1"],
+  "scaffold_defaut":2, "carnet_retention":["le tracteur","la récolte","nourrir"],
+  "version":"1.0.0", "qc":{"passed":true,"reviewer_id":"prof-01"} }
+WordCard:
+{ "fr":"nourrir", "ipa":"/nu.ʁiʁ", "read_ar":"نُورِير", "ar":"يُطعِم / يغذّي",
+  "tun":"يْطعّم البهائم", "syllabes":["nour","rir"], "image":"/media/6a/1A/u2/nourrir.png",
+  "audio_fr_slow":"/media/…/nourrir-075.mp3", "audio_fr_norm":"/media/…/nourrir.mp3",
+  "exemple_fr":"Je nourris les poules le matin.", "exemple_ar":"أُطعِم الدجاج صبيحة كل يوم.",
+  "freq":"hors-liste", "fsrs":{"state":"learning","due":"2026-09-03","stability":0.35} }
+TextSegment:
+{ "idx":3, "fr":"Le fermier ouvre la grille du parc.", "ar":"يفتح الفلّاح بوابة الحظيرة.",
+  "words":[{"w":"fermier","ar":"فلّاح","audio":"/…/fermier.mp3","hot":true}],
+  "audio":"/…/s3.mp3","image":"/…/s3.png","difficulty":2,
+  "phoneme_focus":["è ouvert","nasal an"] }
+QuizItem:
+{ "id":"q4", "type":"image-choice|vrai-faux|order|listen-pick|retell",
+  "prompt_fr":"…", "prompt_ar":"…", "choices":[…], "answer":1,
+  "feedback_hint_fr":"Relis la phrase 2.", "feedback_hint_ar":"أعد قراءة الجملة 2 واقلب الصورة.",
+  "skill":"compréhension", "difficulty":2 }
+ProgressEvent (append-only):
+{ "t":"2026-09-03T18:02:11Z", "s":"pseudo-4f2a", "lesson":"m1-lecture-apprentie-comedienne",
+  "step":"read-aloud", "wcpm":54, "errors":["grille→gir-le"], "scaffold":2, "xp":10 }
+
+# الخصوصية وأمن القاصرين (تنفيذ لا توصية)
+- أساس قانوني مرجعي: حقوق الطفل + مبادئ GDPR/COPPA + القانون التونسي عدد 2004-63 المتعلق بحماية
+  المعطيات الشخصية (تصريح/إذن وليّ)، مع مبدأ minimisation: لا اسم عائلة، لا بريد، لا موقع جغرافي.
+- هوية التلميذ = pseudo-id عشوائي + room code؛ ربط القسم فقط عبر الأستاذ (رمز قسم).
+- الصوت: يُعالَج ثم يُحذف في ≤ 24 ساعة (لا تخزين تسجيلات الجهر إلا بموافقة صريحة من الأستاذ/الوليّ،
+  وعند الموافقة يُخزَّن مُبعَّدًا ومشفّرًا مع تاريخ حذف إلزامي).
+- تشفير: at-rest (AES-256/ pgcrypto) + in-transit (TLS1.2+)؛ مفاتيح في .env.local (لا تُرفع أبدًا؛
+  أدرج .gitignore و .env.example ووثّق ذلك).
+- تقارير: مُجرّدة (تجميع على مستوى القسم ≥ 5 تلاميذ قبل عرض أي مؤشّر فردي للأستاذ العام).
+- تحكم وليّ: مفتاح «تصدير بياناتي / حذف حساب ابني» يعمل فعليًا (erase = soft-delete + purge job).
+- محتوى AI: رقابة على المخرجات (classification + قائمة رفض + رفض المواضيع: عنف، سياسة، دين
+  مُجادَل، محتوى جنسي، إعلانات) + «قائمة مواضيع الكتاب المعتمدة» بيضاء.
+- Rate limiting + سجلّ تدقيق للأستاذ على كل تغيير + وضع «القائمة البيضاء للمواقع» في PWA.
+
+# مؤشرات النجاح KPI (تُطبَّع آليًا في جدول metrics + تُعرَض في لوحة الأستاذ)
+1) معدّل إتمام المسار: ≥ 65% من الدروس المباشرة تُنهى حتى step Récap.
+2) الفهم: ≥ 70% في أول محاولة على ≥ 60% من التلاميذ (مقابل خطّ أساس التشخيصي).
+3) الطلاقة: +20% WCPM بعد 8 أسابيع؛ أخطاء النطق لكل 100 كلمة تنخفض ≥ 30%.
+4) الاحتفاظ المعجمي: ≥ 80% دقّة بعد أسبوعين على بطاقات FSRS.
+5) الالتزام: ≥ 3 جلسات/أسبوع × ≥ 10 دقائق لـ 50% من التلاميذ؛ retention يوم 30 ≥ 40%.
+6) التحفيز: مقياس «أستطيع قراءة نصّ جديد» (مقياس ليكرت 3 أوجه مرسوم) يتحسّن؛ نسبة «أريد أن ألعب مرة
+   أخرى» ≥ 75% استبيان نكتة نهاية.
+7) الأستاذ: ≥ 60% من الأساتذة يستخدمون لوحة القسم مرة/أسبوع، و≥ 4/5 رضا.
+8) تقني: Lighthouse Performance ≥ 85 على Moto G4 emulation، First-Byte ≤ 600ms، معدل crash ≤ 0.5%،
+   اشتغال كامل offline على 6 دروس مخبّأة.
+9) مالي/تشغيلي: كلفة التلميذ/الشهر ≤ 0.05$ (توليد المحتوى مرّة واحدة، صوت مخزّن، LLM للقلة النادرة).
+
+# طريقة العمل المطلوبة منك في كل ردّ (مُعطِّلة لغير ذلك)
+1) «ملامح المنصة»: موجز ≤ 300 كلمة (واجهة + مسارات + تدفّق يومي) — في الردّ الأول فقط.
+2) «خطة تنفيذ على شكل سباقات (sprints)»: جداول بملفات ومهام واضحة لكل سباق (S-1 تثبيت مرجع البرنامج (نسخ sources/*.pdf، تشغيل tools/index_manuel.py، توليد data/curriculum-6e.json، وحدة اختبار JSON-schema له) ثم S0 تهيئة المستودع،
+   S1 نموذج البيانات والـ seed، S2 القارئ karaoke+TTS، S3 Malette+FSRS، S4 Quiz+تغذية راجعة،
+   S5 الروبوت المرافق، S6 التحفيز، S7 لوحة الأستاذ، S8 خط إنتاج المحتوى+OCR، S9 PWA offline،
+   S10 التقويم والقياس، S11 توثيق ونشر).
+3) ثم نفّذ: أنشئ الملفات فعليًا واكتب الكود كاملًا (لا pseudo-code، لا «…/اختصر»)؛ بعد كل سباق:
+   `npm run typecheck && npm run lint && npm run test` ثم `npm run build`، وأرفق تقريرًا بما نُفِّذ
+   وبما لا يزال معلّقًا وبما تحقّقت منه فعلًا (مخرجات الأوامر).
+4) لا تدّع وجود واجهة برمجية أو حقل في قاعدة بيانات دون التحقق؛ عند انقطاع معلومة، اختر قرارًا
+   «conservateur»، دوّنه في docs/decisions/NNNN-*.md (ADR) وتابع، لا تسأل إلا عند انسداد لا رجعة فيه.
+5) كل نص فرنسي تُولّده يجب أن يكون: A1-safe، جملة ≤ 12 كلمة، سياق تونسي، بلا أسماء علامات، ومع
+   ترجمته العربية ومقاطعته الصوتية وصورته؛ وأضف اختبارًا آليًا يفرض ذلك.
+6) التزم بتصميم أنيق موحّد (استخدم tokens في packages/ui/theme.ts) ولا تكتب أنماطًا متفرقة.
+7) في النهاية: اكتب README.md كامل (تشغيل محلي، نشر، دليل الأستاذ، سياسة الخصوصية، خارطة الطريق
+   نحو نسخة الفصل الدراسي)، وقدّم «الخطوة التالية المقترحة» الواحدة:
+   «بناء نسخة تجريبية على 8 بطاقات (نصّ من كل وحدة) + اختبار تشخيصي، وتجريبها مع 20 تلميذًا لمدة أسبوعين، مع قياس
+   WCPM/الفهم قبل وبعد».
+
+ابدأ الآن: أخرج «ملامح المنصة» ثم «خطة السباقات» ثم نفّذ S0 و S1 فعليًا في المستودع.
+```
+
+---
+
+## الجزء ٢ — برومت توليد المحتوى (يُرسل بعد الموافقة على الخطة)
+
+```text
+مهمتك: إنشاء محتوى «pack 6a-1A-u1» كاملًا ومنشورًا في content/6a/1A/u1/ وفق النماذج في المواصفات.
+القواعد:
+1) 3 نصوص أصلية (80–120 كلمة) تحترم مواضيع المقطع الأول للسنة السادسة (الحياة المدرسية، الحيّ،
+   البيئة والمحيط، العائلة، السلامة المرورية، الاحتفالات) — لا نسخ من الكتاب الرسمي، مع وسم
+   source:"inspired-official" وشرح أوجه المطابقة (الطول، البنية، المعجم المستهدف).
+2) لكل نص: pré-lecture (سؤالان تنبّؤ + صورة غلاف)، malette (7 كلمات)، segments جملة بجملة
+   (fr + ar + phonétique simplifiée + syllabes + hot words + audio paths + image path)،
+   quiz (7 items موزّعة على: 2 identification, 2 inférence, 1 ordre, 1 image-match, 1 dictée),
+   «ce qu'il faut retenir» (4 cartes), 2 mini-jeux (memory + loto sonore), وvidéo (30–45 ثانية،
+   6 مشاهد، وصف storyboard + dialogue TTS + VTT).
+3) السياق تونسي أصيل وأسماء تونسية شائعة (أمين، سلمى، ياسين، نour، الجدّة، الحافلة الصفراء،
+   سوق الأربعاء، بحر الحمامات، المصطيف…)، بدون علامات تجارية وبدون مرجعيات مثيرة للجدل.
+4) الترجمة العربية: فصحى مبسّطة يفهمها تلميذ 11 سنة + سطر «بالدارجة» للكلمات الصعبة فقط.
+5) اكتب مولّدًا آليًا (packages/content-pipeline/src/build.ts) ينتج media (TTS mp3 + images)
+   و QC report، وشغّله على الحزمة، وأرفق مخرجاته.
+6) أضف 20 اختبارًا وحدة: schema (Zod)، مطابقة fr↔ar، سقف A1، كل كلمة في malette موجودة في النص،
+   كل صورة/صوت موجود فعلًا، عدم تجاوز طول الجملة.
+7) لا تُخفِ أي فشل: إن تعذّر توليد صوت/صورة، اكتب TODO مع placeholder SVG/mp3 صالح للاستعمال.
+```
+
+## الجزء ٣ — برومت الروبوت المرافق (Persona + نظام داخلي)
+
+```text
+اكتب packages/ai/prompts/tutor.fr.ts و tutor.ar.ts (system prompts) ودوّرها داخل /api/tutor مع:
+- سياق ديناميكي = { leçon.id, phrase_en_cours, mots_difficiles, niveau_scaffold, dernier_error,
+  état_émotionnel_détecté (من 3 أصناف: stressé/dispersé/motivé) }.
+- سياسة الردّ: (1) اعكس مشاعر التلميذ في 5 كلمات؛ (2) أعد صياغة سؤاله؛ (3) قدّم تلميحًا واحدًا
+  (لا الجواب)؛ (4) اختم بدعوة للمحاولة «جرّب، وأنا أسمعك».
+- إذا طلب التلميذ الحل: رفض لطيف + تلميحان متدرّجان، والثالث بعد محاولة فعلية منه (flag attempt_made).
+- إذا قال «لا أفهم شيئًا/أنا غبي»: بروتوكول طمأنة (تنفّس 4-4-4، كلمة واحدة ناجحة من malette، نجمة).
+- إذا خرج عن الموضوع: حوّل بلطف إلى النص. إذا ذكر أذى/عنف عائلي: رسالة تحويل + تنبيه الأستاذ.
+- كل ردّ ≤ 25 كلمة، عربي مبسّط + كلمة فرنسية هدف (max 1)، بدون emoji زائد (≤ 2).
+- أضف tests: 12 سيناريو (طلب الحل، الإحباط، سؤال شخصي، محتوى خطر، انحراف، طلب ترجمة كاملة)
+  وتحقّق من الفلاتر بالآلي.
+```
+
+## الجزء ٤ — برومت القارئ والنطق (karaoke + scoring)
+
+```text
+نفّذ في packages/ui/Reader.tsx و packages/audio/:
+1) Karaoke sync: إبراز الكلمة أثناء النطق عبر word boundary events (Azure) أو estimate بـ
+   phoneme→duration map على Web Speech (fallback)، مع scroll-to-segment تلقائي واحترام
+   prefers-reduced-motion.
+2) تحكّم: ▶ ⏸ ⏪ ↺جملة 🐢0.75× 🐇1.0×، تبديل الترجمة (off/fra→ar/parallel)، تظليل المقاطع،
+   وضع «خط واحد» (reader mode) ووضع «كلمات مفاتيح بارزة».
+3) Read-aloud scoring: تسجيل قصير (MediaRecorder) → Web Speech ASR → diff مع النص المستهدف
+   → (a) accuracy لكل كلمة (edit distance على level phoneme مبسّط) (b) WCPM (c) قائمة «كلمات-سر».
+   بدون Azure: scoring تقريبي موثّق الدقّة، وبدون إظهار «علامة» للتلميذ — فقط 3 نجوم ونموّ.
+4) الخصوصية: لا رفع الصوت للخادم في وضع Demo (شغّل كل شيء في المتصفح)؛ إن استُخدم Azure فمسح
+   التسجيل بعد 24 ساعة (cron purge) وسجّل ذلك في docs/privacy.md.
+5) أضف Storybook/Playwright test يغطّي: استماع، تكرار، إظهار ترجمة، قراءة تلميذ، حفظ تقدّم،
+   استرجاع offline.
+```
+
+## الجزء ٥ — برومت لوحة الأستاذ وأولياء الأمور
+
+```text
+أنشئ /enseignant مع: قسم (room code)، قائمة تلاميذ (pseudo فقط)، خريطة القسم heatmap
+(5 مكوّنات × 3 ألوان نمو)، توزيع الـ 3 نقاط قوة/3 نقاط ضعف لكل تلميذ مع مثال من إجابته،
+زر «إسناد نص» (assign + due date بليونة)، «مُعدّل الدعم» (يدوي يُلغي الآلي لسبب بيداغوجي)،
+تصدير تقرير PDF/PNG أسبوعي، و«مراجعة جودة المحتوى» (approve/reject + ملاحظة) لبطاقات P6.
+أنشئ /parent: ملخّص 4 أسطر فقط (عدد الجلسات، نصّ أُنجز، نقطة تحسّنت، جملة تشجيع) + رمز PIN
+يعطيّه الأستاذ + زر «طلب محادثة مع الأستاذ» + «حذف بيانات ابني».
+مُنع: ترتيب التلاميذ، مقارنة بينهم، عرض تسجيلات صوتية، عرض إجابات تلميذ آخر.
+```
+
+## الجزء ٦ — برومت التحقّق النهائي (قبل اعتبار المشروع «جاهزًا»)
+
+```text
+شغّل فعليًا وأرفق المخرجات: npm run typecheck; npm run lint; npm run test -- --coverage; npm run build;
+npx lighthouse http://localhost:3000/pilot --only-categories=performance,accessibility,best-practices;
+npx playwright test؛ ثم اختبر يدويًا (بدون نت) على وضع Throttling Fast 3G: تحميل الصفحة،
+استماع، قراءة، إجابة quiz، حفظ تقدّم، استرجاع بعد إعادة التشغيل.
+أخرج جدولًا: [المطلوب في المواصفات] | [نُفّذ ✓] | [مكان التنفيذ/الملف] | [كيف تحقّقت] | [ملاحظة].
+كل سطر بـ ✓ يجب أن يثبت بأمر أو اختبار، لا بـ«منطق الكود».
+```
+
+## الجزء ٧ — برومت النشر على GitHub (المستودع الحالي)
+
+```text
+المستودع: https://github.com/douhmans/- (اسمه الحالي «-» ووصفه «منصة تعليمية للغة الفرنسية»).
+1) اقترح إعادة التسمية إلى qanawa-francais وحدّث الوصف إلى:
+   «منصة رقمية لتسهيل فهم وقراءة نصوص الفرنسية لتلاميذ السنة السادسة ابتدائي بتونس — دعم بالصور
+    والصوت والترجمة والروبوت المرافق.» (مع الحفاظ على حقول GitHub الحالية إن لم تسمح الصلاحيات،
+    واكتب الأوامر يدويًا: gh repo rename / gh repo edit --description).
+2) أدرج: README.md بالعربية + ملخّص بالفرنسية (المشكل، الحل، الآلية، لقطة شاشة، التشغيل،
+   البنية، سياسة الخصوصية، خارطة الطريق)، LICENSE (AGPL-3.0 للمساهمة التربوية المفتوحة + تنبيه
+   أن محتوى الكتاب الرسمي خاضع لحقوق CNIP)، .gitignore, .env.example, CONTRIBUTING.md,
+   docs/.*, CHANGELOG.md.
+3) CI بـ GitHub Actions: lint+typecheck+test+build، ونشر Pages/PWA على Vercel/Cloudflare Pages،
+   وworkflow أسبوعي لتشغيل QC على المحتوى (content-qa.yml).
+4) أُنشئ Issues جاهزة من السباقات S0→S11 مع Labels (pedagogie, frontend, ai, privacy, content)
+   و Milestone v0.1 (pilote 20 تلميذًا). إن تعذّر فتح issues آليًا، اعرض أوامر gh جاهزة للنسخ.
+5) الالتزامات: conventional commits، فرع feat/* لكل سباق، و PR واحد لكل سباق مع «ما نُفّذ/ما حُقِّق».
+```
+
+## الجزء ٨ — برومت «وضع الطوارئ»: نصّ من كتاب المدرسة الآن
+
+```text
+سأرفع صورة صفحة من كتاب القراءة للسنة السادسة. المطلوب منك، داخل فضاء الأستاذ الخاص فقط:
+1) OCR دقيق (fra+ara) مع تصحيح يدوي عند الحاجة، واحترام حقوق النشر: لا نشر علني، الاستخدام
+   تربوي شخصي، مع خيار حذف المصدر.
+2) تحويل الصفحة إلى بطاقة درس بالمواصفات (segments, malette, quiz, images, audio, vidéo).
+3) شرح ديداكتيكي للأستاذ في 5 أسطر: الصعوبة المتوقعة، التمارين المقترحة قبل القراءة، و 3 أسئلة
+   للصفّ.
+4) لا تُبدّل النص الأصلي للتلميذ: اعرضه كما هو في الكتاب، الدعم يُضاف فوقه (overlay) لا بديلًا منه.
+```
+
+---
+
+## الجزء ٩ — النسخة الإنجليزية المكافئة (إن كان النموذج أجدى بالإنجليزية)
+
+```text
+You are a Product Engineer + Pedagogical Lead. Build, do not describe: a working PWA that helps
+Tunisian 6th-grade primary pupils (11 y, pre-A1 French) understand and read their official schoolbook
+texts (CNIP, «Un pas de plus… vers le collège», 136 p., 8 modules in 4 unités, 8 h/week, fiche-contrat,
+J1-J8 weekly grid, 5 texts/module, APC situation-problème). The authoritative map already exists at
+data/curriculum-6e.json (generated from the official guide, verified: 42/56 text titles located in the
+manual PDF) — bind every lesson's meta to it and never invent the curriculum structure.
+Problem: pupils cannot decode new words, have no reliable audio model, no visual translation, no home
+support → they disengage from French. North-star metric: % of texts finished with ≥70% comprehension
+on the first pass, plus WCPM growth.
+
+Non-negotiables: (1) teacher-assistive, never a teacher replacement; (2) no copyrighted textbook text
+published publicly — default to "inspired-official" original texts of the same length/lexis/themes,
+with an "import page photo (OCR)" mode confined to the teacher's private workspace (tools/build_official_card.py already implements page → card with noise filtering, sentence segmentation, heading isolation, lexicon-based novelty and QC report; reuse it, do not rewrite it); (3) child
+safeguarding first (no PII, audio deleted ≤24h, no ranking, no dark patterns).
+
+Daily loop to implement exactly: pré-lecture (look at the picture, predict) → «malette de mots»
+(French word + syllabation + simplified phonetics + Arabic + dialect gloss + image + slow/normal TTS)
+→ guided reading with karaoke highlight, sentence-level replay, speed control, on-demand Arabic
+subtitle, "I didn't get this" flag → read-aloud with pronunciation scoring and a 3-word "secret
+words" fix routine → comprehension (QCM, vrai/faux, ordering, image-matching) with hints that never
+reveal answers → one vocabulary mini-game → retell/production (3 sentences, "first… then… at the end")
+→ "à retenir" flashcards saved into a spaced-repetition deck (FSRS/SM-2) → XP + garden of words.
+
+Scaffolding ladder D1..D4 (translate+image+audio → audio+image → audio → autonomous) auto-raised on
+failure and faded after 3 consecutive successes on the same structure. Adaptive placement test
+(listen-pick, read-aloud, comprehension, sentence-completion, 7 min, early stop, confidence score);
+re-test every 3 weeks; report to teacher as 3 strengths + 3 weaknesses with real examples, class
+heatmap by phonologie/lexique/syntaxe/fluence/compréhension; never display a score or rank to the pupil.
+
+Tech: Next.js 15 App Router + TypeScript + Tailwind + Framer Motion + Zustand + React Query;
+Postgres+Prisma (fallback: SQLite/JSON + demo mode); PWA with Workbox + IndexedDB offline cache and
+idempotent sync queue; audio via a SpeechProvider abstraction (Web Speech API default, Azure/Google
+TTS + Pronunciation Assessment behind a server proxy) with all assets pre-generated and cached so the
+LLM is never called per pupil; content pipeline CLI: OCR → segment → glossary → TTS → images → quiz →
+automatic QC (A1 ceiling: ≤12 words per sentence, target lexicon, 1:1 Arabic alignment, asset link
+check, bias & representation audit ≥50% girls in activities) → publish + Git versioning + human review.
+Design system: warm paper palette (lapis #1B4F8C, turquoise #17B0A0, burgundy #7A1F3D, sun #F6C64B,
+bg #FBF7EF), Arabic UI RTL (IBM Plex Sans Arabic) + French text in school-shaped font (Lexend/Andika)
+at 22–26px with 1.8 line-height and wide word-spacing, 56px touch targets, WCAG AA, reduced-motion and
+dyslexia-friendly reader mode, single-card home screen, confetti only at lesson completion.
+Companion bot (chosen avatar, Lottie): Tunisian-arabic, warm, ≤25-word replies, coaching not solving,
+strict guardrails (no personal info, no other pupils' data, no harmful topics, content audit log,
+white-listed subject areas, refusal-with-two-hints policy, calming protocol for distressed pupils).
+KPIs: lesson completion ≥65%, comprehension ≥70% for ≥60% of pupils, +20% WCPM in 8 weeks, −30%
+pronunciation errors/100 words, ≥80% 2-week vocab retention, ≥3 sessions/week, D30 ≥40%, teacher
+satisfaction ≥4/5, Lighthouse ≥85 on Moto G4, cost ≤ $0.05/pupil/month.
+Delivery: sprint plan S0…S11, real files and full code (no placeholders), then run typecheck/lint/test/
+build/lighthouse/playwright and attach outputs, with a traceability table
+(spec item | implemented ✓ | file | how verified | note). Any claim must be backed by a command result.
+Final step to propose: ship 6 pilot cards + placement test, run a 2-week pilot with 20 pupils in a
+Sfax primary school, measure WCPM and comprehension before/after.
+Repo: https://github.com/douhmans/- → rename to qanawa-francais, update description/README/AGPL
+license, CI (lint+typecheck+test+build+Pages), 12 issues mapped to sprints, milestone v0.1.
+```
+
+---
+
+## ملاحق تشغيلية سريعة
+
+**نموذج استمارة «دليل الأستاذ» (تُلصق في docs/teachers-guide.md):** الاسم المختار للمنصة · القسم · رمز الدخول · عدد التلاميذ · مستوى القسم (A/B/C) · النص المبرمَج هذا الأسبوع · درجة الدعم الافتراضية · ملاحظات تعثّر (2 أسطر) · هل تحتاج تدخّلًا بصوت/صور إضافية؟ · توقيع.
+
+**قائمة «لا تقبل» (Rejection list) لرفض مخرجات أي نموذج:**
+- نصّ فرنسي فيه جملة > 12 كلمة أو زمن غير مستهدف أو اسم علامة تجارية.
+- ترجمة عربية حرفية أو عامية في غير موضعها، أو ترجمة بلا مصدر جملة.
+- صورة غير مفهومة/مُربكة/لا علاقة لها بالمقطع، أو صورة لا تحترم التنوّع.
+- روبوت يُعطي الحل، أو يسأل التلميذ عن معلومة شخصية، أو يستعمل التهديد/المقارنة.
+- واجهة تعرض ترتيب التلاميذ، أو تسجيلًا صوتيًا محفوظًا بلا موافقة، أو شريط «خسارة»/عقوبة.
+- مكوّن لا يعمل في وضع offline أو زر < 48px أو نص < 20px على الهاتف.
+
+**معايير القبول النهائية (Definition of Done):** تلميذ لا يعرف 8 كلمات جديدة يدخل النص، ويخرج بعد ≤ 15 دقيقة وقد نطَق الكلمات السبع وسجّل فهمًا ≥ 70% وحفظ 5 بطاقات في فضاء المراجعة — والدليل: جلسة Playwright مسجّلة + مخرجات الاختبارات + لوحة الأستاذ تعرض تحسّنًا في مكوّن واحد على الأقل.

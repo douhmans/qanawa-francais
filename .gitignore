@@ -1,0 +1,23 @@
+# contenus générés localement (ne pas committer)
+sources/pages/
+**/media/
+*.tmp
+# secrets / env
+.env
+.env.local
+.env.*.local
+# outils
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+.pytest_cache/
+# artefacts de build du futur frontend
+dist/
+build/
+.next/
+out/
+coverage/
+# gros exports
+*.zip
+*.bundle

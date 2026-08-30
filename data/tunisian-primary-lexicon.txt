@@ -1,0 +1,41 @@
+# Liste de haute fréquence — français 1A→5A (Tunisie) : mots considérés « déjà vus ».
+# Les mots absents de cette liste deviennent des « mots nouveaux » → malette (audio+image+traduction).
+# v0 : 1re main, ~600 items. À enrichir à partir du vocabulaire réellement traité dans les manuels 3e-5e.
+# un par ligne, minuscules, sans accent géré par le normaliseur du script.
+le la les un une des du de d au aux ce cette ces
+mon ma mes ton ta tes son sa ses notre nos votre leur leurs
+je tu il elle on nous vous ils elles me te se lui y
+en qui que quoi dont où quand comment pourquoi combien et ou mais donc
+car or ni si comme alors aussi très trop peu beaucoup plus moins bien
+mal mieux être avoir aller faire dire lire écrire prendre mettre vouloir pouvoir devoir
+savoir voir venir partir rester suis es est sommes êtes sont ai as a
+avons avez ont vais vas va allons allez vont à dans sur sous avec
+sans chez pour par vers devant derrière dedans dehors entre près loin matin soir
+midi jour nuit semaine mois année lundi mardi mercredi jeudi vendredi samedi dimanche printemps
+été automne hiver janvier février mars avril mai juin juillet août septembre octobre novembre
+décembre école classe élève maître maitresse professeur cahier livre trousse crayon gomme règle ciseaux
+colle tableau banc cour récréation devoirs leçon dictée copie stylo ardoise sac cartable bibliothèque
+maison père mère maman papa frère sœur grands-parents grand-père grand-mère tante oncle cousin cousine
+famille garçon fille enfant ami amie copain voisine voisin gens personne humain manger boire
+petit-déjeuner déjeuner dîner repas pain viande poisson œufs fruits légumes lait eau jus pomme
+banane orange figue datte raisin citron melon olive huile sel sucre farine beurre fromage
+gâteau rouge bleu vert jaune noir blanc gris rose brun clair sombre foncé sale
+propre chaud froid doux dur grand petit long court haut bas large épais mince
+lourd léger vite lentement fort tard tôt beau belle joli jolie bon bonne mauvais
+nouvelle nouveau vieux jeune âgé neuf deux trois quatre cinq six sept huit dix
+onze douze quinze vingt trente quarante cinquante cent premier deuxième troisième dernier prochain autre
+même tout toute tous chaque main tête pied œil yeux nez bouche dent langue
+cheveux bras doigt jambes ventre dos épaule corps cœur chat chien cheval vache mouton
+chèvre poule coq canard pigeon âne souris lapin oiseau abeille papillon arbre fleur feuille
+herbe branche racine graine terre sable pierre rocher mer rivière lac pluie neige vent
+soleil nuage ciel montagne désert forêt jardin parc rue route voiture bus vélo train
+avion bateau ville village hôpital marché boutique magasin ferme usine bureau poste appartement étage
+porte fenêtre mur toit cuisine chambre salon salle travail métier ouvrier agriculteur boulanger boucher
+cuisinier médecin infirmier pompier policier journaliste acteur chanteur parler écouter entendre regarder chercher trouver
+montrer demander répondre poser expliquer raconter jouer courir sauter marcher nager chanter danser dessiner
+peindre coller couper compter réciter apprendre réviser fermer ouvrir allumer éteindre monter descendre sortir
+entrer donner envoyer recevoir acheter vendre payer amitié aide aider ensemble partager gentil méchant
+peur courage joie tristesse colère amour santé maladie sport jeux journal radio télévision téléphone
+ordinateur image photo titre page ligne mot phrase texte histoire conte roman bande dessinée
+présent passé futur hier aujourd'hui demain parfois jamais toujours rarement souvent ici là-bas partout
+nulle part quelque monsieur madame mademoiselle bonjour bonsoir merci pardon s'il plaît revoir

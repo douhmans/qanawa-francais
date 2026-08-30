@@ -1,0 +1,397 @@
+{
+  "pdf": "cahier-activites-6e.pdf",
+  "page_count": 112,
+  "role": "cahier d'activités (fiches d'auto-évaluation, Je m'entraîne…)",
+  "titles": {
+    "Apprentie comédienne": {
+      "occurrences_pages": [
+        6,
+        30
+      ],
+      "titre_page": null,
+      "module": 1
+    },
+    "Une parfumeuse en herbe": {
+      "occurrences_pages": [
+        11,
+        30
+      ],
+      "titre_page": 11,
+      "module": 1
+    },
+    "Témoignages": {
+      "occurrences_pages": [
+        16,
+        30
+      ],
+      "titre_page": 16,
+      "module": 1
+    },
+    "Quel métier choisir ?": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 1
+    },
+    "Un tableau découpé": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 1
+    },
+    "Au travail": {
+      "occurrences_pages": [
+        30
+      ],
+      "titre_page": null,
+      "module": 1
+    },
+    "Le boulanger": {
+      "occurrences_pages": [
+        12,
+        30
+      ],
+      "titre_page": 12,
+      "module": 1
+    },
+    "Le vieux robot": {
+      "occurrences_pages": [
+        20,
+        30
+      ],
+      "titre_page": 30,
+      "module": 2
+    },
+    "Une télé pas comme les autres": {
+      "occurrences_pages": [
+        22,
+        30
+      ],
+      "titre_page": 30,
+      "module": 2
+    },
+    "Le monde du journalisme": {
+      "occurrences_pages": [
+        24,
+        30
+      ],
+      "titre_page": 30,
+      "module": 2
+    },
+    "Les médias / Faire « son journal »": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 2
+    },
+    "Faire la maquette de la « Une »": {
+      "occurrences_pages": [
+        30
+      ],
+      "titre_page": 30,
+      "module": 2
+    },
+    "Les machines": {
+      "occurrences_pages": [
+        30
+      ],
+      "titre_page": 30,
+      "module": 2
+    },
+    "Conversation": {
+      "occurrences_pages": [
+        30
+      ],
+      "titre_page": 30,
+      "module": 2
+    },
+    "Le petit lapin tout blanc": {
+      "occurrences_pages": [
+        33,
+        56
+      ],
+      "titre_page": null,
+      "module": 3
+    },
+    "Le nouveau costume": {
+      "occurrences_pages": [
+        37,
+        56
+      ],
+      "titre_page": null,
+      "module": 3
+    },
+    "L'Indien qui ne savait pas courir": {
+      "occurrences_pages": [
+        40,
+        56
+      ],
+      "titre_page": null,
+      "module": 3
+    },
+    "Les ressemblances et les différences entre les êtres humains": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 3
+    },
+    "Le bouquet de bienvenue": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 3
+    },
+    "Marie et moi": {
+      "occurrences_pages": [
+        56
+      ],
+      "titre_page": null,
+      "module": 3
+    },
+    "Donne autour de toi": {
+      "occurrences_pages": [
+        56
+      ],
+      "titre_page": null,
+      "module": 3
+    },
+    "Un bon compagnon": {
+      "occurrences_pages": [
+        46,
+        56
+      ],
+      "titre_page": null,
+      "module": 4
+    },
+    "L'écureuil et l'escargot": {
+      "occurrences_pages": [
+        48,
+        56
+      ],
+      "titre_page": null,
+      "module": 4
+    },
+    "Le courage d'un jeune apprenti": {
+      "occurrences_pages": [
+        50,
+        56
+      ],
+      "titre_page": null,
+      "module": 4
+    },
+    "L'école, un droit pour tous": {
+      "occurrences_pages": [
+        56
+      ],
+      "titre_page": null,
+      "module": 4
+    },
+    "Le jeu du Petit Poucet": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 4
+    },
+    "L'homme et le chien": {
+      "occurrences_pages": [
+        56
+      ],
+      "titre_page": null,
+      "module": 4
+    },
+    "Si vous n'avez rien à me dire": {
+      "occurrences_pages": [
+        56
+      ],
+      "titre_page": null,
+      "module": 4
+    },
+    "Sauvez Keiko": {
+      "occurrences_pages": [
+        60,
+        83
+      ],
+      "titre_page": 83,
+      "module": 5
+    },
+    "La ménagère de la mer": {
+      "occurrences_pages": [
+        64,
+        83
+      ],
+      "titre_page": 83,
+      "module": 5
+    },
+    "Les parapluies": {
+      "occurrences_pages": [
+        66,
+        83
+      ],
+      "titre_page": 83,
+      "module": 5
+    },
+    "Comment éviter le gaspillage de l'eau": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 5
+    },
+    "Fabriquer une famille de cygnes": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 5
+    },
+    "Qu'elle est belle la terre !": {
+      "occurrences_pages": [
+        83
+      ],
+      "titre_page": 83,
+      "module": 5
+    },
+    "L'arbre volant": {
+      "occurrences_pages": [
+        83
+      ],
+      "titre_page": 83,
+      "module": 5
+    },
+    "La jeune acrobate": {
+      "occurrences_pages": [
+        71,
+        83
+      ],
+      "titre_page": null,
+      "module": 6
+    },
+    "Des vignettes… pour un ballon": {
+      "occurrences_pages": [
+        76,
+        83
+      ],
+      "titre_page": null,
+      "module": 6
+    },
+    "La lettre de Jean": {
+      "occurrences_pages": [
+        78,
+        83
+      ],
+      "titre_page": null,
+      "module": 6
+    },
+    "Comment lutter contre le stress": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 6
+    },
+    "Faire des exercices d'étirement": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 6
+    },
+    "Un matin": {
+      "occurrences_pages": [
+        83
+      ],
+      "titre_page": null,
+      "module": 6
+    },
+    "Le vélo à mille pattes": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 6
+    },
+    "La lettre de Paul": {
+      "occurrences_pages": [
+        86,
+        112
+      ],
+      "titre_page": 112,
+      "module": 7
+    },
+    "La lettre de Daniel": {
+      "occurrences_pages": [
+        90,
+        112
+      ],
+      "titre_page": 112,
+      "module": 7
+    },
+    "La lettre de Monsieur Crêpe": {
+      "occurrences_pages": [
+        92,
+        112
+      ],
+      "titre_page": 112,
+      "module": 7
+    },
+    "Peinture, sculpture et théâtre de marionnettes": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 7
+    },
+    "Jouer au nombre pensé": {
+      "occurrences_pages": [
+        112
+      ],
+      "titre_page": 112,
+      "module": 7
+    },
+    "Dans le grenier de ma grand-mère": {
+      "occurrences_pages": [
+        112
+      ],
+      "titre_page": 112,
+      "module": 7
+    },
+    "Pour faire le portrait d'un oiseau": {
+      "occurrences_pages": [
+        112
+      ],
+      "titre_page": 112,
+      "module": 7
+    },
+    "Le grand voyage": {
+      "occurrences_pages": [
+        98,
+        112
+      ],
+      "titre_page": null,
+      "module": 8
+    },
+    "Une sortie de classe au Canada": {
+      "occurrences_pages": [
+        103,
+        112
+      ],
+      "titre_page": null,
+      "module": 8
+    },
+    "L'île au trésor": {
+      "occurrences_pages": [
+        106,
+        107,
+        112
+      ],
+      "titre_page": null,
+      "module": 8
+    },
+    "Quelques fêtes d'autres pays": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 8
+    },
+    "Fabriquer la tour Eiffel": {
+      "occurrences_pages": [],
+      "titre_page": null,
+      "module": 8
+    },
+    "Une graine voyageait": {
+      "occurrences_pages": [
+        112
+      ],
+      "titre_page": null,
+      "module": 8
+    },
+    "Le vent a fait le tour du monde": {
+      "occurrences_pages": [
+        112
+      ],
+      "titre_page": null,
+      "module": 8
+    }
+  }
+}

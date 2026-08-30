@@ -1,0 +1,11 @@
+Code, outils et données de structure (README, tools/, data/*.json hors texte d'élève) :
+  © Projet « qanawa-francais » — Licence Publique Générale GNU Affero v3 (AGPL-3.0).
+  Le code doit rester libre et les améliorations redistribuées sous la même licence.
+
+Textes, images et pages des manuels scolaires tunisiens (dossier official-docs/ et tout contenu
+provenant du CNIP) :
+  © Centre National Pédagogique — « Tous droits réservés au Centre National Pédagogique ».
+  Usage pédagogique privé uniquement dans l'espace enseignant/élève de la plateforme.
+  Toute republication publique du texte brut des manuels est interdite sans autorisation du CNIP.
+
+Fiche de conformité du projet : docs-sources-officiels.md · official-docs/README.md
