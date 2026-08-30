@@ -44,11 +44,15 @@ echo       (csc refuse /win32icon + /win32res ensemble : l'icône seule suffit)
 
 echo.
 echo 3/4  Copie du contenu pédagogique à côté de l'exe
-if exist "%~dp0..\prototype" (
+set "PROTO=%~dp0..\prototype"
+if not exist "%PROTO%\index.html" set "PROTO=%~dp0..\..\prototype"
+if not exist "%PROTO%\index.html" set "PROTO=%CD%\prototype"
+if exist "%PROTO%\index.html" (
   if exist "%BIN%\prototype" rmdir /s /q "%BIN%\prototype"
-  xcopy /e /i /q /y "%~dp0..\prototype" "%BIN%\prototype" >nul || echo   [attention] copie partielle du dossier prototype
+  xcopy /e /i /q /y "%PROTO%" "%BIN%\prototype" >nul || echo   [attention] copie partielle du dossier prototype
 ) else (
-  echo   [attention] dossier ..\prototype introuvable — dépose-le à côté de Qanawa.exe
+  echo   [attention] dossier prototype introuvable (cherche dans parent, grand-parent, repertoire courant)
+  echo   Dépose-le à côté de Qanawa.exe puis relance, ou reprends le ZIP complet de la Release.
 )
 
 echo.
