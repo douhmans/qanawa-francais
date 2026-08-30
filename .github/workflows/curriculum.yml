@@ -1,0 +1,19 @@
+name: curriculum
+on:
+  push:
+    paths: ["data/**", "tools/**", "official-docs/**", ".github/workflows/curriculum.yml"]
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install pymupdf pyphen
+      - name: Régénérer le référentiel depuis les PDF officiels
+        run: python3 tools/index_manuel.py official-docs/manuel-lecture-6e.pdf --out data/curriculum-6e.json --index data/page-index-manuel.json
+      - name: Contrôle de conformité au programme
+        run: python3 tools/check_curriculum.py
+      - name: Le référentiel généré doit être identique à celui committé
+        run: git diff --exit-code -- data/curriculum-6e.json
