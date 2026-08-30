@@ -20,7 +20,7 @@
 d7301e4 prototype: modèle premier jouable (S2–S10) sans build ni dépendances
 ```
 
-Ils sont **déjà rébasez sur `e788491`** (vérifié : `git merge-base --is-ancestor e788491 HEAD` → vrai),
+Ils sont **déjà rébasez sur `e788491`** (`git merge-base --is-ancestor e788491 HEAD` → vrai),
 donc le push est un simple **fast-forward**, sans `--force`.
 
 ### Pourquoi ils ne sont pas encore en ligne
