@@ -42,7 +42,7 @@ function pupils() {
 }
 let local = null;
 try {
-  const st = JSON.parse(localStorage.getItem("qanawa.state.v1") || "null");
+  const st = JSON.parse((window.localStorage && localStorage.getItem("qanawa.state.v1")) || "null");
   if (st && (st.stars || Object.keys(st.done || {}).length)) {
     local = {
       pseudo: (st.pseudo || "تلميذ هذا الجهاز") + " (هذا المتصفح)",

@@ -55,7 +55,8 @@ const blank = () => ({
   flags: {},              /* id -> [idx phrases non comprises] */
   sfx: true, showAr: true, reduce: false, rate: 0.85, voiceURI: ""
 });
-let S = load();
+let S = blank();
+try { S = load(); } catch { S = blank(); }   // file:// peut refuser localStorage
 function load(pseudo) {
   const p = pseudo === undefined ? readRaw(LAST) : pseudo;
   if (p) try { WHO = String(JSON.parse(readRaw(keyFor(p)) || "{}").pseudo || p) || p; } catch { WHO = p; }
@@ -64,7 +65,7 @@ function load(pseudo) {
   catch { return blank(); }
 }
 function save() {
-  const j = JSON.stringify(S);
+  let j; try { j = JSON.stringify(S); } catch { return; }
   const p = String(S.pseudo || "").trim();
   if (p) { writeRaw(keyFor(p), j); writeRaw(LAST, p); if (WHO !== p) WHO = p; }
   writeRaw(KEY, j);                                                 // lu par  فضاء الأستاذ / export
