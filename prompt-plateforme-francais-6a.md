@@ -232,7 +232,7 @@ unite})، `journees_type` (J1→J8 بحصصها الرسمية)، `organisation_
 - Auth للأستاذ: Auth.js (credentials+OTP عبر البريد). للتلميذ: room code + avatar، بدون بيانات شخصية.
 - ملاحظة: كل خدمة مدفوعة لها واجهة Mock في المستودع (MODE=mock) حتى يعمل المشروع فور `npm i && npm run dev`.
 
-# هيكل المستودع (GitHub: https://github.com/douhmans/-)
+# هيكل المستودع (GitHub: https://github.com/douhmans/qanawa-francais)
 - اسم المشروع المقترح: `qanawa-francais` (منصة تعليمية للغة الفرنسية)؛ فرع `main` + `feat/*`.
 apps/
   web/            # منصة التلميذ (PWA) + مسارات /enseignant و/parent
@@ -418,11 +418,10 @@ npx playwright test؛ ثم اختبر يدويًا (بدون نت) على وضع
 ## الجزء ٧ — برومت النشر على GitHub (المستودع الحالي)
 
 ```text
-المستودع: https://github.com/douhmans/- (اسمه الحالي «-» ووصفه «منصة تعليمية للغة الفرنسية»).
-1) اقترح إعادة التسمية إلى qanawa-francais وحدّث الوصف إلى:
-   «منصة رقمية لتسهيل فهم وقراءة نصوص الفرنسية لتلاميذ السنة السادسة ابتدائي بتونس — دعم بالصور
-    والصوت والترجمة والروبوت المرافق.» (مع الحفاظ على حقول GitHub الحالية إن لم تسمح الصلاحيات،
-    واكتب الأوامر يدويًا: gh repo rename / gh repo edit --description).
+المستودع: https://github.com/douhmans/qanawa-francais — أُعيدت تسميته، وحُدِّثت وصفه وtopics، ودُفع فيه مرجعُ البرنامج (commit f01fa91). لا تُعِد التسمية ولا تُعِد كتابة الوصف (تمّا). ابدأ مباشرة من الهيكل الحالي:
+1) تحقّق من حالة المستودع قبل أي عملية: `gh repo view --json name,description,repositoryTopics,defaultBranchRef`
+   أو REST `GET /repos/douhmans/qanawa-francais`؛ وإن وجدتَ شيئًا ناقصًا فأصلِحه بأمر `gh repo edit` جاهز للنسخ،
+   ولا تَدمَج أبدًا مع `fr_6eme/` القديم (احذفه بـ `git rm -r fr_6eme` في PR مستقل إن بقي).
 2) أدرج: README.md بالعربية + ملخّص بالفرنسية (المشكل، الحل، الآلية، لقطة شاشة، التشغيل،
    البنية، سياسة الخصوصية، خارطة الطريق)، LICENSE (AGPL-3.0 للمساهمة التربوية المفتوحة + تنبيه
    أن محتوى الكتاب الرسمي خاضع لحقوق CNIP)، .gitignore, .env.example, CONTRIBUTING.md,
@@ -502,7 +501,7 @@ build/lighthouse/playwright and attach outputs, with a traceability table
 (spec item | implemented ✓ | file | how verified | note). Any claim must be backed by a command result.
 Final step to propose: ship 6 pilot cards + placement test, run a 2-week pilot with 20 pupils in a
 Sfax primary school, measure WCPM and comprehension before/after.
-Repo: https://github.com/douhmans/- → rename to qanawa-francais, update description/README/AGPL
+Repo: https://github.com/douhmans/qanawa-francais → rename to qanawa-francais, update description/README/AGPL
 license, CI (lint+typecheck+test+build+Pages), 12 issues mapped to sprints, milestone v0.1.
 ```
 

@@ -9,8 +9,8 @@
 - المعطى الميداني: أغلب التلاميذ يعجزون عن فهم وقراءة نصوص الكتاب المدرسي الرسمي.
   المرجع المؤسِّس للمشروع (موثَّق ومستخرَج فعلًا، لا افتراض):
   • كتاب التلميذ «Un pas de plus… vers le collège — Manuel de lecture, 6ème année de l'Enseignement
-    de Base», Centre National Pédagogique (136 ص) → official-docs/manuel-lecture-6e.pdf (+ sources/manuel.txt)
-  • «Guide Méthodologique» لنفس الكتاب (216 ص) → official-docs/guide-methodologique-6e.pdf (+ sources/guide.txt)
+    de Base», Centre National Pédagogique (136 ص) → sources/manuel_6e.pdf (+ sources/manuel.txt)
+  • «Guide Méthodologique» لنفس الكتاب (216 ص) → sources/guide_6e.pdf (+ sources/guide.txt)
   • خريطة البرنامج مُفرزنة في data/curriculum-6e.json وهي **مرجع الحقيقة الوحيد** لكل بنية ومكوّن.
   البنية الرسمية (احذف من ذهنك «الثلاثيات»): **8 وحدات (modules)** في **4 وحدات إدماجية (unités)**،
   كل وحدة = أسبوعان/8 أيام-دراسة بـ 8 ساعات أسبوعيًا، + **يومان-حاجز (journées-paliers)** للإدماج،
@@ -147,7 +147,7 @@ unite})، `journees_type` (J1→J8 بحصصها الرسمية)، `organisation_
   P7. النشر: بطاقة لكل نصّ (المسار: content/6e/m<module>/<type>-<slug>/)، مع versioning في Git
       (لا يُحذف محتوى، يُؤرشف) وmeta.indexée sur data/curriculum-6e.json (module, page du manuel).
    أدوات جاهزة يجب أن تُدمَج في المستودع وتُستعمَل ولا تُعاد كتابتها:
-     • tools/index_manuel.py → يولّد data/curriculum-6e.json + data/page-index-manuel.json
+     • tools/index_manuel.py → يولّد data/curriculum-6e.json + sources/page-index.json
        (توثيق 52 عنوانًا من 56 في طبقة نصّ الـ PDF؛ 42 معروضة فوق النصّ، البقية تُراجَع يدويًا).
      • tools/build_official_card.py <image|pdf|txt> --module n → بطاقة JSON (قطع جُمَل، عزل العناوين،
        تنقية صفوف الآلة «Module n°/Je lis/Texte n° 1/Comprendre Lire Réagir»، تمييز mots nouveaux مقابل
@@ -221,7 +221,7 @@ unite})، `journees_type` (J1→J8 بحصصها الرسمية)، `organisation_
 - Auth للأستاذ: Auth.js (credentials+OTP عبر البريد). للتلميذ: room code + avatar، بدون بيانات شخصية.
 - ملاحظة: كل خدمة مدفوعة لها واجهة Mock في المستودع (MODE=mock) حتى يعمل المشروع فور `npm i && npm run dev`.
 
-# هيكل المستودع (GitHub: https://github.com/douhmans/-)
+# هيكل المستودع (GitHub: https://github.com/douhmans/qanawa-francais)
 - اسم المشروع المقترح: `qanawa-francais` (منصة تعليمية للغة الفرنسية)؛ فرع `main` + `feat/*`.
 apps/
   web/            # منصة التلميذ (PWA) + مسارات /enseignant و/parent
