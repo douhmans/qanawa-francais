@@ -167,3 +167,33 @@ release, pas de modification des règles de protection, pas de dépôt autre que
 **Et la fois précédente :** le token `arena-push-qanawa-1j` doit être supprimé s'il ne l'est pas déjà →
 **https://github.com/settings/personal-access-tokens** → *Delete*. Un token qui a traîné dans une
 conversation ne mérite pas de vivre, même expiré.
+
+
+---
+
+## TOKEN n° 3 — push du prototype + Release (utilisé le 2026-08-30, **à révoquer maintenant**)
+
+| Case | Valeur exacte |
+|---|---|
+| Repository access | Only select repositories → `douhmans/qanawa-francais` |
+| Expiration | 1 day |
+| Contents | **Read and write** (seule portée nécessaire : push, tag, Release + upload d'assets) |
+
+Ce qu'il a fait, dans l'ordre (sorties sans jeton, masquées par `sed`) :
+
+```
+git push origin main                     e788491..1ca7fff   (16 commits)
+git tag v0.1.0-prototype && git push     [new tag]
+POST /releases                           201 → id 379324023 (prerelease)
+POST /releases/…/assets ×4               201 ×4 (zip, .sha256, exe, ico)
+git push origin main                     1ca7fff..3107f61   (réparation du README)
+```
+
+Ce qu'il n'a **pas** pu faire : écrire dans `.github/workflows/` (portée `Workflows` non accordée) —
+le job `release-windows.yml` attend dans `.qanawa-ci/workflows/`.
+
+Hygiène appliquée : jeton écrit dans `/tmp/.gh3` en `umask 077`, jamais dans le dépôt, jamais en argument
+de commande (`sed "s/${T}/<MASK>/g"` sur la sortie), fichier supprimé à la fin. **Il reste à le révoquer** :
+<https://github.com/settings/personal-access-tokens> → *Revoke*. Un jeton fine-grained à expiration d'un
+jour meurt tout seul, mais la révocation immédiate est la bonne habitude — le jeton a été collé en clair
+dans une conversation.

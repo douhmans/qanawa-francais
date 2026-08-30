@@ -1,51 +1,105 @@
-# `prototype/` — نموذج أولي يعمل في المتصفح (بدون بناء، بدون اعتمادات)
+# منصة «قَنَوة» — تسهيل فهم وقراءة الفرنسية لتلاميذ السنة السادسة أساسي بتونس
 
-غرضه الوحيد: **أن تُجرّب تجربة التلميذ وتراها بعينك** قبل بناء التطبيق الحقيقي بالسباقات S0→S10.
-لا خادم، لا npm، لا مفاتيح API: ملف HTML + بيانات ثابتة + صوت المتصفّح.
+مجلّد تأسيس للمشروع: **البرومت الموجَّه لوكيل البرمجة + مرجع البرنامج الرسمي المُستخرَج من وثائق وزارة التربية / المركز الوطني البيداغوجي (CNIP)**.
 
-## السباقات المُمثَّلة هنا
+## المشكل · الحل · الآلية
 
-| سباق | ما هو موجود في النموذج |
-|---|---|
-| S2 القارئ | قراءة جملة بجملة، سماع عادي/🐢 بطيء، سطر معزول، نقرة على الكلمة = سماعها، ضغطة على ترجمة الكلمة، ⭐ «لم أفهمها» |
-| S3 الحقيبة + FSRS | malette لكل كلمة: مقطعي + API مبسّطة + MSA/دارجة + emoji + مثال تونسي؛ أجندة مراجعة تلقائية (`due`) |
-| S4 الفهم | 5–6 عناصر بالترتيب الرسمي (globale → analytique → vocabulaire → dépassement) وتلميح لا يكشف الجواب |
-| S5 النطق | محطة نطق بالتباينات الـ15 التي نصّ عليها الدليل ص26 |
-| S6 الروبوت | «نور» بقواعد محلية: طمأنة، تلميح بدل الجواب، رفض طلب الحل، منع أسئلة المعلومات الشخصية |
-| S7 التحفيز | نجوم بسقف 20/يوم، سلسلة لا تنكسر بيوم راحة، حديقة كلمات، بلا ترتيب بين التلاميذ |
-| S8 الأستاذ | heatmap، 3 قوّة/3 ضعف بمثال فعلي، إسناد نصّ + درجة دعم، شبكة C1→C7، تصدير CSV/طباعة، صفّ QC |
-| S10 | اختبار توجيه مصغّر (استماع/قراءة/فهم/ثقة) يعطي مسار A/B/C بلا علامة للتلميذ |
+- **المشكل:** تلاميذ الابتدائي في تونس يتعثّرون في قراءة نصوص كتاب الفرنسية الرسمي: لا نموذج صوتي سليم، لا ترجمة مرئية، لا دعم منزلي ← عزوف عن المادة.
+- **الحل:** منصة رقمية PWA تعرض كل نصّ جملةً جملة مع سماع + ترجمة عربية + صورة + نطق مُقيَّم، ويرافق التلميذ روبوت مشجّع، ويقيّم الأستاذ من لوحة قسم.
+- **الآلية:** pré-lecture (تنبّؤ + حقيبة كلمات) → قراءة karaoke → «اقرأ بصوتك» مع تصحيح النطق → أسئلة فهم متدرّجة → لعبة مفردات → «ما يجب حفظه» بمراجعة مباعدة → تحفيز بالنجوم وحديقة الكلمات.
 
-## التشغيل
+## البنية
 
-Ce prototype est **vérifié par machine**, pas seulement ouvert à l'œil :
-
-```bash
-node tools/check_prototype.mjs      # schéma des cartes + règle « un indice ne contient jamais la réponse »
-node tools/harnais_prototype.mjs    # rejoue TOUT le parcours (élève + enseignant) sur http://127.0.0.1:4173
+```
+├── prompt-plateforme-francais-6a.md   ← البرومت الكامل (الأم + 8 برومبات تابعة + نسخة إنجليزية)
+├── prompt-master.txt                    ← البرومت الأم وحده (322 سطرًا) للنسخ المباشر في أداة البرمجة
+├── docs-curriculum-6e.md                ← تحليل رسمي: البنية، الأهداف، الأيام الثمانية، الفونيتيك، التقييم
+├── docs-sources-officiels.md            ← التحقق من هوية كل وثيقة رسمية
+├── official-docs/                       ← الوثائق الرسمية الخمس من CNIP + كتالوجها
+├── data/curriculum-6e.json              ← مرجع الحقيقة الآلي (وحدات × نصوص × أهداف × وسائل)
+├── data/page-index-manuel.json          ← عنوان كل نصّ رسمي ↔ رقم صفحته في كتاب التلميذ
+├── data/page-index-cahier.json          ← rubriques du cahier d'activités ↔ صفحاته
+├── data/tunisian-primary-lexicon.txt    ← «ما دُرس سابقًا» (517 كلمة) لتمييز الكلمات الجديدة
+├── tools/index_manuel.py                ← PDF الكتاب → خريطة البرنامج + فهرسة الصفحات + أوراق PL
+├── tools/build_official_card.py         ← صفحة الكتاب (صورة/PDF/نص) → بطاقة درس JSON + تقرير QC
+├── tools/check_curriculum.py            ← فحص تطابق المرجع مع البرنامج (موصول بـ CI)
+├── examples/p11-raw.txt                 ← صفحة 11 الحقيقية من كتاب التلميذ (نصّ مُستخرَج)
+├── examples/cards/m1-466ae4.json        ← بطاقة مولّدة منها (إثبات عمل الحلقة)
+├── prototype/                           ← نموذج أوّلي يعمل بالكامل (HTML/JS، بلا خادم ولا اعتمادات)
+├── win32/                               ← lanceur Windows (Qanawa.exe) + notice d'installation
+├── tools/harnais_prototype.mjs          ← 51 تحقّقًا يؤدّي المسار كلّه آليًا (Node + jsdom)
+├── tools/check_prototype.mjs            ← فحص مخطّط البطاقات وسياسة «تلميح لا جواب»
+├── tools/package_windows.py             ← يغلّف الـ exe + prototype في zip + SHA-256
+├── GUIDE-TEST-PROTOTYPE.md              ← كيف تختبر النموذج وماذا تتوقّع بالضبط
+└── ops/curriculum.yml     ← CI يعيد التوليد ويقارن
 ```
 
-Le second outil charge les pages depuis le serveur, clique ~40 fois et échoue si une règle produit casse
-(état actuel : ✅ vert). Il a d'ailleurs attrapé deux vrais bugs avant la première utilisation humaine
-(`teacher.js` plantait sur les exemples d'un élève réel ; `#/phono` et `#/placement` n'avaient pas de route).
+## تحميل نسخة Windows جاهزة (Release)
 
-```bash
-cd prototype && python3 -m http.server 4173 --bind 0.0.0.0
-# puis http://localhost:4173/   (et  http://localhost:4173/teacher.html)
+**[‏`v0.1.0-prototype` ← صفحة الإصدارات](https://github.com/douhmans/qanawa-francais/releases/tag/v0.1.0-prototype)**
+تحوي: `Qanawa-windows.zip` (‏87,309 بايت) · `Qanawa-windows.zip.sha256` · `Qanawa.exe` · `Qanawa.ico`.
+
+```
+SHA-256 = 76cb6229531e79b3d5016827dabeded75ffb6c61df190fcb2016e3f81282c375
+   تحقّق على الجهاز:  certutil -hashfile Qanawa-windows.zip SHA256
 ```
 
-## التحقق آليًا
+**قبل التشغيل: استخرج محتوى الأرشيف كاملًا** (كليك يمين ← *Extract All*) ثم شغّل `Qanawa.exe` من المجلّد الجديد —
+تشغيله من داخل الـ ZIP يعطي صفحة فارغة لأنّ مجلّد `prototype/` لا يكون بجانبه (الآن تظهر صفحة تشخيص بدل الفراغ).
+وليس بفتح `index.html` مباشرة: في وضع `file://` يرفض Chrome/Edge التخزين فلا يُحفظ اسم التلميذ ولا تقدّمه.
 
-```bash
-node tools/check_prototype.mjs      # 4 cartes · 33 énoncés · 26 mots · 22 items · 6 contrastes
-node -e "for (const f of ['app.js','data.js','teacher.js','sw.js']) new Function(require('fs').readFileSync('prototype/'+f,'utf8')); console.log('syntax OK')"
-python3 tools/check_curriculum.py   # le référentiel du programme reste conforme
+---
+
+## نسخة Windows للّوح المدرسي (بدون إنترنت)
+
+`win32/` يحتوي **QanawaLauncher.cs** (‏.NET Framework 4.0، ≈ 26 كيلوبايت): يشغّل خادمًا محليًا
+على `http://localhost:8137/` يقدّم مجلّد `prototype/`، ثم يفتح المتصفّح، ويترك أيقونة في علبة النظام.
+بلا مثبّت، بلا صلاحيات إداري، وبلا أيّ منفذ خارج الجهاز. لماذا خادم محلي وليس نقرة على `index.html`؟
+لأنّ `file://` يمنع service worker (العمل دون اتصال) ويجعل حفظ التقدّم غير موثوق.
+
+```bat
+cd C:\Qanawa\win32 && build_exe.bat      :: يبعث csc.exe الموجود أصلًا في Windows (‏4.x)
 ```
 
-## حدود النموذج (ما لا يفعله بعد)
+والملف الجاهز: `win32/dist/Qanawa-windows.zip` (exe + prototype + ملاحظة التثبيت + SHA-256).
+الـ CI (`.github/workflows/release-windows.yml`) يعيد بناءه على `windows-latest` عند كل وسم `v*`
+وينشره في Releases — وهو أيضًا المكان الوحيد الذي يُختبَر فيه الـ exe على Windows الحقيقية.
+التفاصيل وحدودها (SmartScreen، الأصوات الفرنسية، الترميز حسب الجهاز) في `win32/README-WINDOWS.md`.
 
-- **الصوت** من محرّك المتصفّح فقط (`speechSynthesis`)؛ إن لم يكن صوت فرنسي مثبّتًا في نظامك تسمّع اللهجة الافتراضية، والتظليل **تقديري** (زمن/عدد أحرف) لا `word boundary` حقيقي — في النسخة النهائية يوفّره Azure/Google.
-- **لا ميكروفون مسجَّل**: القراءة الجهرية تُقاس بعدّ كلمات صحيحة يدويًا أو عبر `SpeechRecognition` (يطلب إذنًا، ولا يُرفع شيء للخادم).
-- **بياناتك لا تغادر الجهاز**: لا حساب، لا خادم، localStorage فقط — التصفير من ⚙️ «تصفير بياناتي».
-- **الروبوت** بقواعد ثابتة (بدون LLM) ليُختبَر التدفّق لا الذكاء.
-- النصوص: M1 قصيدة من الكتاب **في الملك العام** (Raymond Richard، ت 1958)؛ M5/M6/M8 نصوص أصلية محاكية للبرنامج. لا نصّ خاضع لحقوق CNIP هنا.
+## إعادة الإنتاج والتحقق (كلها شُغِّلت فعليًا في هذا المستودع)
+
+```bash
+pip install pymupdf pyphen                      # التبعات المستعمَلة هنا
+python3 tools/index_manuel.py official-docs/manuel-lecture-6e.pdf \
+        --out data/curriculum-6e.json --index data/page-index-manuel.json \
+        --index-cahier official-docs/cahier-activites-6e.pdf
+# [index] 42/56 عنوانًا تحت نصّها · [pl] 24 feuilles indexées · [cahier] 20/56 rubriques · [ok] 8 modules
+
+python3 tools/check_curriculum.py
+# ✅ référentiel conforme au programme officiel (8 modules / 5 textes / J1-J8 / C1-C7)
+
+python3 tools/build_official_card.py examples/p11-raw.txt --module 1 --out examples/cards
+# module 1 · Apprentie comédienne (match 1.0) · phrases: 9 · mots nouveaux: 12
+```
+
+للصور/الصوت/OCR (تُلحَق في سباق البناء، تتطلّب أدوات خارجية): `pip install pytesseract pillow`
++ `apt-get install tesseract-ocr tesseract-ocr-fra tesseract-ocr-ara`، ثم مرّر صورة صفحة بدل ملف نصّي.
+
+## الحقائق الرسمية التي بُني عليها كل شيء (لا افتراضات)
+
+- **8 وحدات (modules)** في **4 وحدات إدماجية (unités)**؛ كل وحدة = أسبوعان/8 أيام-دراسة، **8 ساعات أسبوعيًا** (الدليل ص20).
+- لكل وحدة **5 نصوص** (3 «Je lis» على حصّتين: compréhension ثم fonctionnement، + «Je lis pour m'informer» ي-7، + «Je lis pour agir» ي-8) + قصيدة «Je récite» + «Page vocabulaire» + مشروع كتابة؛ ويومان-حاجز وأسابيع تقييم/معالجة + 2-3 أسابيع للتقييم القبلي.
+- **لا ثلاثيات في التنظيم البيداغوجي**؛ التنقيط للنصوص الثلاثية فقط، ودرجات الإتقان `0 / + / ++ / +++`.
+- **مراحل استغلال النصّ** (الدليل ص33-34): Anticipation → Approche globale → Approche analytique → Vocabulaire → Synthèse/dépassement؛ والكتاب يشرح «**en moyenne deux mots par texte**» فقط ← هذه فجوة الدعم التي تملؤها المنصّة.
+- الدليل ينصّ على **غياب حصة فونيتيك في التوقيت** (ص26) ويحدّد **15 تباينًا صوتيًا عربي/فرنسي** ← مادة «محطة النطق» في المنصّة.
+- تقييم الكتابة بـ **7 معايير C1→C7**؛ **portfolio** هو جسر التلميذ/الأستاذ/الأولياء؛ و**24 ورقة PL رسمية** (4 للتقييم القبلي + PL5→PL20 للوحدات) صارت مرقمنة.
+- أسماء شرائح فضاء التلميذ مأخوذة حرفيًا من الكتاب: *Je récite / Je lis / Je lis pour m'informer et me documenter / Je lis pour agir / J'ouvre la boîte à mots / Je joue avec les mots / Je m'entraîne / J'observe / Je retiens / Je produis / Je fais le point* + «fiche d'auto-évaluation» كل وحدتين.
+
+## حقوق النشر
+
+الوثائق © CNIP («Tous droits réservés au Centre National Pédagogique»). القاعدة في هذا المشروع:
+البنية والأهداف وعناوين النصوص وصور الصفحات تُستعمل داخليًا في **فضاء الأستاذ/القسم الخاص**؛ أما **المنصّة العمومية** فتنشر البيانات الوصفية والمحتوى المشتَقّ (تمارين، بطاقات مفردات، صور، صوت) لا النصّ الخام للكتاب — يضمن ذلك `rights.mode` + فحص QC في `tools/build_official_card.py`. الكود والمرجع مرخّصان AGPL-3.0 (انظر `LICENSE`).
+
+## الخطوة الموالية المقترحة
+
+`S-1` من البرومت: تثبيت هذا المرجع في `main` مع CI، ثم توليد **8 بطاقات (نصّ من كل وحدة)** عبر `tools/build_official_card.py`، وبناء اختبار التشخيص على أوراق PL1→PL4، وتجريبها مع **20 تلميذًا لأسبوعين** مع قياس WCPM ونسبة الفهم قبل/بعد.
